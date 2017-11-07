@@ -160,7 +160,7 @@ void loop() {
   pollTimeouts();
   if(phase == BELOW && lastPhase == DOWN) {//edge detection!
     double a = 9.81e-10;
-    double lag = rescale(analogRead(POT0_PIN),0,1024,0,100000);
+    double lag = 17675;
     Serial.print("Lag = ");
     Serial.println(lag);
     double v = sensorDist/(exitTimes[LOWER] - exitTimes[UPPER]);
