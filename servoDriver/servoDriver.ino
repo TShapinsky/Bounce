@@ -12,198 +12,181 @@
   }
 #define NORM(a)    (sqrt((a)[0]*(a)[0] + (a)[1]*(a)[1] + (a)[2]*(a)[2]))
 #define INDEX(y,x,m,n) ((y)*(n)+(x))
-#define H 12
-#define EPSILON .1
+#define H (12+5.0/8.0)
+#define EPSILON .001
+#define MAX_ITERATIONS 100
 #define EQ(a,b) (abs((a)-(b))<EPSILON)
+#define N_INPUTS 6
+#define N_DELIMS (N_INPUTS-1)
+#define READ_THETAS 1
 
 const int pins[] = PINS;
 const int mins[] = MINS;
 const int maxs[] = MAXS;
 Servo servos[6];
-
-bool thetasValid = true;
-float topPts[4*6];
-float botPts[4*6];
-float topTransformed[4*6];
-float offsets[4*6];
-float offsetsT[6*4];
-float tMat[4*4];
-float nMat[4*4];
-float fullTransform[4*4];
-float dists[6];
+float params[N_INPUTS];
+float nextParams[N_INPUTS];
 float thetas[6];
+String inputString;
+bool newParams = false;
 
-void zero(float *mat, int m, int n) {
-  for(int y = 0; y<m; ++y) {
-    for(int x = 0; x<n; ++x) {
-      mat[INDEX(x,y,m,n)] = 0;
+float getLength(int index, float x0, float x1, float x2, float x3, float x4, float x5) {
+  float x = params[0];
+  float y = params[1];
+  float ux = params[3];
+  float uy = params[4];
+  float uz = params[5];
+  float THUNK0 = pow(ux,2);
+  float THUNK1 = pow(uz,2);
+  float THUNK2 = sqrt(THUNK0+THUNK1);
+  float THUNK3 = 3.405049132851517*uz/THUNK2;
+  float THUNK4 = ux*uy;
+  float THUNK5 = THUNK2*sqrt(THUNK0+pow(uy,2)+THUNK1);
+  float THUNK6 = 0.6141989928900345*THUNK4/THUNK5;
+  float THUNK7 = cos(x0);
+  float THUNK8 = -0.6141989928900345*THUNK0-0.6141989928900345*THUNK1/THUNK5;
+  float THUNK9 = 3.405049132851517*ux/THUNK2;
+  float THUNK10 = uy*uz;
+  float THUNK11 = 0.6141989928900345*THUNK10/THUNK5;
+  float THUNK12 = cos(x1);
+  float THUNK13 = 1.*x;
+  float THUNK14 = cos(x3);
+  float THUNK15 = cos(x4);
+  switch(index) {
+    case 0: return sqrt(pow(-3.1934686764551174+THUNK3+THUNK6+x+0.5*THUNK7,2)+pow(1.84375+THUNK8+y+0.8660254037844386*THUNK7,2)+pow(-12.43+THUNK9-THUNK11+sin(x0),2));
+    case 1: return sqrt(pow(-3.1934686764551174+THUNK3-THUNK6+x+0.5*THUNK12,2)+pow(1.84375+THUNK8-1.*y+0.8660254037844386*THUNK12,2)+pow(-12.43+THUNK9+THUNK11+sin(x1),2));
+    case 2: return sqrt(pow(-3.6875+3.255958546628605*THUNK0+3.255958546628605*THUNK1/THUNK5+y,2)+pow(1.17061263560417*uz/THUNK2+3.255958546628605*THUNK4/THUNK5-THUNK13+cos(x2),2)+pow(-12.43-1.17061263560417*ux/THUNK2+3.255958546628605*THUNK10/THUNK5+sin(x2),2));
+    case 3: return sqrt(pow(3.1934686764551174-2.2344364972473456*uz/THUNK2-2.6417595537385705*THUNK4/THUNK5+x+0.5*THUNK14,2)+pow(-1.84375+2.6417595537385705*THUNK0+2.6417595537385705*THUNK1/THUNK5+y+0.8660254037844386*THUNK14,2)+pow(-12.43-2.2344364972473456*ux/THUNK2+2.6417595537385705*THUNK10/THUNK5+sin(x3),2));
+    case 4: return sqrt(pow(1.84375+-2.641759553738569*THUNK0-2.641759553738569*THUNK1/THUNK5+y-0.8660254037844386*THUNK15,2)+pow(3.1934686764551174-2.2344364972473474*uz/THUNK2+2.641759553738569*THUNK4/THUNK5+x+0.5*THUNK15,2)+pow(-12.43-2.2344364972473474*ux/THUNK2-2.641759553738569*THUNK10/THUNK5+sin(x4),2));
+    case 5: return sqrt(pow(3.6875+-3.2559585466286043*THUNK0-3.2559585466286043*THUNK1/THUNK5+y,2)+pow(1.1706126356041722*uz/THUNK2-3.2559585466286043*THUNK4/THUNK5-THUNK13+cos(x5),2)+pow(-12.43-1.1706126356041722*ux/THUNK2-3.2559585466286043*THUNK10/THUNK5+sin(x5),2));
+    default: return -1;
+  }
+}
+
+float getLength_(int index, float x0, float x1, float x2, float x3, float x4, float x5) {
+  float x = params[0];
+  float y = params[1];
+  float z = params[2];
+  float a = params[3];
+  float b = params[4];
+  float g = params[5];
+  float THUNK0 = 1.*x;
+  float THUNK1 = cos(x0);
+  float THUNK2 = 0.5*THUNK1;
+  float THUNK3 = cos(a);
+  float THUNK4 = cos(g);
+  float THUNK5 = 3.405049132851517*THUNK4;
+  float THUNK6 = sin(g);
+  float THUNK7 = 0.6141989928900345*THUNK6;
+  float THUNK8 = THUNK5+THUNK7;
+  float THUNK9 = sin(a);
+  float THUNK10 = sin(b);
+  float THUNK11 = THUNK4*THUNK9*THUNK10;
+  float THUNK12 = 3.405049132851517*THUNK11;
+  float THUNK13 = THUNK10*THUNK6;
+  float THUNK14 = THUNK9*THUNK13;
+  float THUNK15 = 0.6141989928900345*THUNK14;
+  float THUNK16 = cos(b);
+  float THUNK17 = 0.6141989928900345*THUNK4+3.405049132851517*THUNK6;
+  float THUNK18 = THUNK4*THUNK10;
+  float THUNK19 = 0.6141989928900345*THUNK18;
+  float THUNK20 = THUNK5-THUNK7;
+  float THUNK21 = 3.405049132851517*THUNK13;
+  float THUNK22 = cos(x1);
+  float THUNK23 = 1.17061263560417*THUNK4;
+  float THUNK24 = 3.255958546628605*THUNK6;
+  float THUNK25 = cos(x3);
+  float THUNK26 = 2.2344364972473456*THUNK4;
+  float THUNK27 = 2.6417595537385705*THUNK6;
+  float THUNK28 = cos(x4);
+  float THUNK29 = 2.2344364972473474*THUNK4;
+  float THUNK30 = 2.641759553738569*THUNK6;
+  float THUNK31 = 1.1706126356041722*THUNK4;
+  float THUNK32 = 3.2559585466286043*THUNK6;
+  switch(index) {
+    case 0: return sqrt(1.*pow(-3.1934686764551174+THUNK0+THUNK2+THUNK3*THUNK8,2)+pow(1.84375+y+0.8660254037844386*THUNK1+THUNK12+THUNK15+THUNK16*-THUNK17,2)+pow(z-THUNK19+THUNK16*THUNK9*-THUNK20+THUNK21-1.*sin(x0),2));
+    case 1: return sqrt(1.*pow(-3.1934686764551174+THUNK0+0.5*THUNK22+THUNK3*THUNK20,2)+pow(-1.84375+y-0.8660254037844386*THUNK22+THUNK12-THUNK15+THUNK16*THUNK17,2)+pow(z+THUNK19+THUNK16*THUNK9*-THUNK8+THUNK21-1.*sin(x1),2));
+    case 2: return sqrt(pow(x-1.*cos(x2)+THUNK3*-THUNK23-THUNK24,2)+pow(-3.6875+y-1.17061263560417*THUNK11+THUNK16*3.255958546628605*THUNK4-1.17061263560417*THUNK6-3.255958546628605*THUNK14,2)+pow(z+3.255958546628605*THUNK18-1.17061263560417*THUNK13+THUNK16*THUNK9*THUNK23+THUNK24-1.*sin(x2),2));
+    case 3: return sqrt(1.*pow(3.1934686764551174+THUNK0+0.5*THUNK25+THUNK3*-THUNK26-THUNK27,2)+pow(-1.84375+y+0.8660254037844386*THUNK25-2.2344364972473456*THUNK11+THUNK16*2.6417595537385705*THUNK4-2.2344364972473456*THUNK6-2.6417595537385705*THUNK14,2)+pow(z+2.6417595537385705*THUNK18-2.2344364972473456*THUNK13+THUNK16*THUNK9*THUNK26+THUNK27-1.*sin(x3),2));
+    case 4: return sqrt(pow(1.84375+y-0.8660254037844386*THUNK28-2.2344364972473474*THUNK11+THUNK16*-2.641759553738569*THUNK4-2.2344364972473474*THUNK6+2.641759553738569*THUNK14,2)+1.*pow(3.1934686764551174+THUNK0+0.5*THUNK28+THUNK3*-THUNK29+THUNK30,2)+pow(z-2.641759553738569*THUNK18+THUNK16*THUNK9*THUNK29-THUNK30-2.2344364972473474*THUNK13-1.*sin(x4),2));
+    case 5: return sqrt(pow(3.6875+y-1.1706126356041722*THUNK11+THUNK16*-3.2559585466286043*THUNK4-1.1706126356041722*THUNK6+3.2559585466286043*THUNK14,2)+pow(x-1.*cos(x5)+THUNK3*-THUNK31+THUNK32,2)+pow(z-3.2559585466286043*THUNK18+THUNK16*THUNK9*THUNK31-THUNK32-1.1706126356041722*THUNK13-1.*sin(x5),2));
+  }
+}
+
+boolean angleSeach(int index, float tLow, float bLow, float tHigh, float bHigh, int iterations) {
+  if(iterations >= MAX_ITERATIONS) {
+    return false;
+  }
+  float tMid = (tLow+tHigh)/2;
+  thetas[index] = tMid;
+  float bMid = getLength(index, thetas[0], thetas[1], thetas[2], thetas[3], thetas[4], thetas[5]);
+  if(bLow < H && bHigh > H) {
+    if(abs(bMid-H)<EPSILON) {
+      return true;
+    }
+    if(bMid > H) {
+      return angleSeach(index, tLow, bLow, tMid, bMid, iterations+1);
+    } else {
+      return angleSeach(index, tMid, bMid, tHigh, bHigh, iterations+1);
+    }
+  } else {
+     if(abs(bMid-H)<EPSILON) {
+      return true;
+    }
+    if(bMid < H) {
+      return angleSeach(index, tLow, bLow, tMid, bMid, iterations+1);
+    } else {
+      return angleSeach(index, tMid, bMid, tHigh, bHigh, iterations+1);
     }
   }
 }
 
-void normalize(float *v) {
-  float norm = NORM(v);
-  v[0] /= norm;
-  v[1] /= norm;
-  v[2] /= norm;
-}
-
-void translate(float *mat, float x, float y, float z) {
-  mat[INDEX(0,0,4,4)] = 1;
-  mat[INDEX(1,1,4,4)] = 1;
-  mat[INDEX(2,2,4,4)] = 1;
-  mat[INDEX(3,3,4,4)] = 1;
-  mat[INDEX(0,3,4,4)] = x;
-  mat[INDEX(1,3,4,4)] = y;
-  mat[INDEX(2,3,4,4)] = z;
-}
-
-void buildMatTranspose(float *mat, float *i, float *j, float *k) {
-  memcpy(mat+0, i, 4*sizeof(float));
-  memcpy(mat+4, j, 4*sizeof(float));
-  memcpy(mat+8, k, 4*sizeof(float));
-  float l[] = {0,0,0,1};
-  memcpy(mat+12,l, 4*sizeof(float));
-}
-
-void buildMat(float *mat, float *i, float *j, float *k) {
-  float transpose[4*4];
-  buildMatTranspose(transpose, i, j, k);
-  Matrix.Transpose(transpose, 4, 4, mat);
-}
-
-void normal(float *mat, float *u) {
-  const float l[] = {0,1,0,0};
-  const float i[] = {1,0,0,0};
-  const float j[] = {0,1,0,0};
-  const float k[] = {0,0,1,0};
-  float itick[] = CROSS(l,u);
-  normalize(itick);
-  float jtick[] = CROSS(u,itick);
-  normalize(jtick);
-  float *ktick = u;
-  normalize(ktick);
-  buildMat(mat, itick, jtick, ktick);
-}
-
-void normalS(float *mat, float ux, float uy, float uz) {
-  float u[] = {ux, uy, uz, 0};
-  normal(mat, u);
-}
-
-void buildModel(float *model, float r, float theta) {
-  float phi = (2*PI-3*theta)/3;
-  for(int i = 0; i<3; ++i) {
-    model[INDEX(0,2*i,4,6)] = r * cos(i*(phi+theta) - theta/2);
-    model[INDEX(1,2*i,4,6)] = r * sin(i*(phi+theta) - theta/2);
-    model[INDEX(2,2*i,4,6)] = 0;
-    model[INDEX(3,2*i,4,6)] = 1;
-    model[INDEX(0,2*i+1,4,6)] = r * cos(i*(phi+theta) + theta/2);
-    model[INDEX(1,2*i+1,4,6)] = r * sin(i*(phi+theta) + theta/2);
-    model[INDEX(2,2*i+1,4,6)] = 0;
-    model[INDEX(3,2*i+1,4,6)] = 1;
+boolean calculateAngle(int index) {
+  float tLow = -PI/2;
+  float tHigh = PI/2;
+  float tMid  = 0;
+  thetas[index] = tLow;
+  float bLow = getLength(index, thetas[0], thetas[1], thetas[2], thetas[3], thetas[4], thetas[5]);
+  thetas[index] = tHigh;
+  float bHigh = getLength(index, thetas[0], thetas[1], thetas[2], thetas[3], thetas[4], thetas[5]);
+  if(bLow < H && bHigh < H || bLow > H && bHigh > H) {
+    return false;
   }
-}
-
-void calculateTop(float x, float y, float ux, float uy, float uz) {
-  translate(tMat, x, y, H);
-  normalS(nMat, ux, uy, uz);
-  Matrix.Multiply(tMat, nMat, 4, 4, 4, fullTransform);
-  Matrix.Multiply(fullTransform, topPts, 4, 4, 6, topTransformed);
-}
-
-void servoFrame(int servo) {
-  float point[] = {botPts[INDEX(0,servo,4,6)], botPts[INDEX(1,servo,4,6)], 0, 1};
-  float jtick[] = {point[0], point[1], 0, 0};
-  normalize(jtick);
-  float ktick[] = {0,0,1,0};
-  float itick[] = CROSS(jtick, ktick);
-  translate(tMat, -point[0], -point[1], 0);
-  buildMatTranspose(nMat, itick, jtick, ktick);
-  Matrix.Multiply(nMat, tMat, 4, 4, 4, fullTransform);
-}
-
-void calculateDists(float x, float y, float ux, float uy, float uz) {
-  calculateTop(x,y,ux,uy,uz);
-  Matrix.Subtract(topTransformed, botPts, 4, 6, offsets);
-  Matrix.Transpose(offsets, 4, 6, offsetsT);
-  for(int i = 0; i < 6; ++i) {
-    dists[i] = NORM(offsetsT + i*4);
-  }
-}
-
-float calculateTheta(int servo) {
-  servoFrame(servo);
-  float topPoint[] = {
-    topTransformed[INDEX(0,servo,4,6)], 
-    topTransformed[INDEX(1,servo,4,6)],
-    topTransformed[INDEX(2,servo,4,6)], 
-    1
-    };
-  float topPointServoFrame[4];
-  Matrix.Multiply(fullTransform, topPoint, 4, 4, 1, topPointServoFrame);
-  float x = topPointServoFrame[0];
-  float y = topPointServoFrame[1];
-  float z = topPointServoFrame[2];
-  float k0 = 12;
-  float l = 1;
-  float theta0, theta1, theta2, theta3;
-  float d0, d1, d2, d3;
-  float cos0, cos1;
-  bool  cos0Valid=false, cos1Valid=false;
- 
- 
-  cos0 = (x - pow(k0,2)*x + pow(x,3) + x*pow(y,2) + x*pow(z,2) - 
-     sqrt(-pow(z,2) + 2*pow(k0,2)*pow(z,2) - pow(k0,4)*pow(z,2) + 2*pow(x,2)*pow(z,2) + 2*pow(k0,2)*pow(x,2)*pow(z,2) - 
-       pow(x,4)*pow(z,2) - 2*pow(y,2)*pow(z,2) + 2*pow(k0,2)*pow(y,2)*pow(z,2) - 2*pow(x,2)*pow(y,2)*pow(z,2) - 
-       pow(y,4)*pow(z,2) + 2*pow(z,4) + 2*pow(k0,2)*pow(z,4) - 2*pow(x,2)*pow(z,4) - 2*pow(y,2)*pow(z,4) - pow(z,6)))/
-   (2.*(pow(x,2) + pow(z,2)));
-
-  cos1 = (x - pow(k0,2)*x + pow(x,3) + x*pow(y,2) + x*pow(z,2) + 
-     sqrt(-pow(z,2) + 2*pow(k0,2)*pow(z,2) - pow(k0,4)*pow(z,2) + 2*pow(x,2)*pow(z,2) + 2*pow(k0,2)*pow(x,2)*pow(z,2) - 
-       pow(x,4)*pow(z,2) - 2*pow(y,2)*pow(z,2) + 2*pow(k0,2)*pow(y,2)*pow(z,2) - 2*pow(x,2)*pow(y,2)*pow(z,2) - 
-       pow(y,4)*pow(z,2) + 2*pow(z,4) + 2*pow(k0,2)*pow(z,4) - 2*pow(x,2)*pow(z,4) - 2*pow(y,2)*pow(z,4) - pow(z,6)))/
-   (2.*(pow(x,2) + pow(z,2)));
-   
-   if(cos0 >= -1 && cos0 <= 1) {
-    theta0 = acos(cos0);
-    d0 = sqrt(pow(y,2) + pow(x-cos(theta0),2) + pow(z-sin(theta0),2));
-    theta1 = -acos(cos0);
-    d1 = sqrt(pow(y,2) + pow(x-cos(theta1),2) + pow(z-sin(theta1),2));
-    cos0Valid = true;
-   }
-   if(cos1 >= -1 && cos1 <= 1) {
-    theta2 = acos(cos1);
-    d2 = sqrt(pow(y,2) + pow(x-cos(theta2),2) + pow(z-sin(theta2),2));
-    theta3 = -acos(cos1);
-    d3 = sqrt(pow(y,3) + pow(x-cos(theta0),3) + pow(z-sin(theta0),3));
-    cos1Valid = true;
-   }
-   if(cos0Valid) {
-    if(theta0 <= PI/2 && theta0 >= -PI/2 && EQ(d0,k0)) {
-      return theta0;
-    } else if(theta1 <= PI/2 && theta1 >= -PI/2 && EQ(d1,k0)) {
-      return theta1; 
+  if(bLow < H && bHigh > H) {
+    thetas[index] = tMid;
+    float bMid = getLength(index, thetas[0], thetas[1], thetas[2], thetas[3], thetas[4], thetas[5]);
+    if(abs(bMid-H)<EPSILON) {
+      return true;
     }
-   }
-   if(cos1Valid) {
-    if(theta2 <= PI/2 && theta2 >= -PI/2 && EQ(d2,k0)) {
-      return theta2;
-    } else if(theta3 <= PI/2 && theta3 >= -PI/2 && EQ(d3,k0)) {
-      return theta3; 
+    if(bMid > H) {
+      return angleSeach(index, tLow, bLow, tMid, bMid, 1);
+    } else {
+      return angleSeach(index, tMid, bMid, tHigh, bHigh, 1);
     }
-   }
-   digitalWrite(13, HIGH);
-   thetasValid = false;
-   return 0;
+  } else {
+    thetas[index] = tMid;
+    float bMid = getLength(index, thetas[0], thetas[1], thetas[2], thetas[3], thetas[4], thetas[5]);
+     if(abs(bMid-H)<EPSILON) {
+      return true;
+    }
+    if(bMid < H) {
+      return angleSeach(index, tLow, bLow, tMid, bMid, 1);
+    } else {
+      return angleSeach(index, tMid, bMid, tHigh, bHigh, 1);
+    }
+  }
 }
 
-void calculateThetas() {
-  digitalWrite(13,LOW);
-  thetasValid = true;
-  for(int i = 0; i<6; ++i) {
-    thetas[i] = calculateTheta(i);
+boolean calculateAngles() {
+  boolean success = true;
+  for(int index = 0; index<6; ++index) {
+    bool val = calculateAngle(index);
+    success = success && val;
+    if(success == false) {
+      break;
+    }
   }
+  return success;
 }
 
 void moveToAngle(int servo, float angle) {
@@ -216,11 +199,17 @@ void moveToAngle(int servo, float angle) {
 
 void moveToAngles() {
   for(int i = 0; i<6; ++i) {
+    if(thetas[i] > PI/2) {
+      thetas[i] = PI/2;
+    }
+    if(thetas[i] < -PI/2) {
+      thetas[i] = -PI/2;
+    }
     moveToAngle(i,thetas[i]);
   }
 }
 
-String inputString;
+long startTime;
 void setup() {
   float thetaB = 60 * 2 * PI / 360;
   float thetaT = 5 * 2 * PI / 360;
@@ -229,46 +218,85 @@ void setup() {
   for(int i = 0; i<6; ++i) {
     servos[i].attach(pins[i],mins[i],maxs[i]);
   }
+  startTime = millis();
   pinMode(13,OUTPUT);
-  buildModel(botPts, rb, thetaB);
-  buildModel(topPts, rt, thetaT);
   Serial.begin(9600);
   inputString.reserve(200);
+  params[0] = 0;
+  params[1] = 0;
+  params[2] = 12.43;
+  params[3] = 0;
+  params[4] = 0;
+  params[5] = 0;
+  newParams = true;
 }
 
-bool newThetas = false;
 void loop() {
-  if(newThetas) {
-    moveToAngles();
-    newThetas = false;
+  /*float w = .002;
+  long t = millis()-startTime;
+  float r = 1.5;
+  float phi = 10.0/360.0*2*PI;
+  params[0] = -r*cos(t*w);
+  params[1] = -r*sin(t*w);
+  params[2] = sin(phi)*cos(t*w);
+  params[3] = sin(phi)*sin(t*w);
+  params[4] = cos(phi);*/
+  if(newParams) {
+      #if READ_THETAS
+        for(int i = 0; i<6; ++i) {
+          thetas[i] = params[i];
+          moveToAngles();
+        }
+      #else
+        if(calculateAngles()) {
+           moveToAngles();
+           digitalWrite(13, LOW);
+        } else {
+          digitalWrite(13, HIGH);
+        }
+      #endif
+      newParams = false;
   }
 }
 
+boolean inTransaction;
 void serialEvent() {
+  if(newParams) {
+      while(Serial.available()) Serial.read();
+      return;
+  }
   while (Serial.available()) {
     // get the new byte:
     char inChar = (char)Serial.read();
-    if(inChar == ' ') return;
-    
+    if(inChar == ' ') continue;
+    if(inChar == '{') {
+      inTransaction = true;
+      inputString = "";
+    }
+    if(!inTransaction) {
+      continue;
+    }
     if(inChar == '}') {
       String vals = inputString.substring(1);
-      int delimIndicies[] = {0,0,0,0,0};
-      float values[6];
+      int delimIndicies[N_DELIMS] = {0};
+      float values[N_INPUTS];
       delimIndicies[0] = vals.indexOf(',');
       if(delimIndicies[0] == -1) {
         goto kickout;
       }
       values[0] = vals.substring(0,delimIndicies[0]).toFloat();
-      for(int i = 1; i<5; ++i) {
+      for(int i = 1; i<N_DELIMS; ++i) {
         delimIndicies[i] = vals.indexOf(',',delimIndicies[i-1]+1);
         values[i] = vals.substring(delimIndicies[i-1]+1,delimIndicies[i]).toFloat();
       }
-      values[5] = vals.substring(delimIndicies[4]+1).toFloat();
-      for(int i = 0; i<6; ++i) {
-        thetas[i] = values[i];
-        newThetas = true;
+      values[N_INPUTS-1] = vals.substring(delimIndicies[N_DELIMS-1]+1).toFloat();
+      for(int i = 0; i<N_INPUTS; ++i) {
+        params[i] = values[i];
       }
+      newParams = true;
+      Serial.println(inputString+"");
       kickout:
+      inTransaction = false;
       inputString = "";
     } else {
       inputString = inputString + inChar;

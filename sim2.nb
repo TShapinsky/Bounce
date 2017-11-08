@@ -10,16 +10,14 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     65208,       1510]
-NotebookOptionsPosition[     64312,       1480]
-NotebookOutlinePosition[     64683,       1496]
-CellTagsIndexPosition[     64640,       1493]
+NotebookDataLength[     89227,       2080]
+NotebookOptionsPosition[     88510,       2053]
+NotebookOutlinePosition[     88882,       2069]
+CellTagsIndexPosition[     88839,       2066]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
-
-Cell[CellGroupData[{
 Cell[BoxData[{
  RowBox[{
   RowBox[{"ClearAll", "[", "\"\<Global`*\>\"", "]"}], "\[IndentingNewLine]", 
@@ -46,25 +44,33 @@ Cell[BoxData[{
   RowBox[{
    RowBox[{"\[Theta]t", "=", 
     RowBox[{"20.45", " ", "2", 
-     RowBox[{"Pi", "/", "360"}]}]}], ";", "   ", 
-   RowBox[{"(*", 
-    RowBox[{"leg", " ", "angle", " ", "on", " ", "top"}], "*)"}], "\n", 
-   RowBox[{"rt", "=", "3.46"}], ";", "                      ", 
+     RowBox[{"Pi", "/", "360"}]}]}], ";"}], "   ", 
+  RowBox[{"(*", 
+   RowBox[{"leg", " ", "angle", " ", "on", " ", "top"}], "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"rt", "=", "3.46"}], ";"}], "                      ", 
    RowBox[{"(*", 
     RowBox[{"radius", " ", "of", " ", "top"}], "*)"}], ";"}], 
-  "\n"}], "\[IndentingNewLine]", 
+  "\[IndentingNewLine]"}], "\n", 
  RowBox[{
-  RowBox[{"d", " ", "=", " ", 
-   RowBox[{"12", "+", 
-    RowBox[{"5", "/", "8"}]}]}], ";", " ", 
+  RowBox[{
+   RowBox[{"d", " ", "=", " ", 
+    RowBox[{"12", "+", 
+     RowBox[{"5", "/", "8"}]}]}], ";"}], " ", 
   RowBox[{"(*", 
-   RowBox[{"length", " ", "of", " ", "legs"}], "*)"}], "\[IndentingNewLine]", 
-  RowBox[{"r", " ", "=", " ", "1"}], ";", " ", 
+   RowBox[{"length", " ", "of", " ", "legs"}], 
+   "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"r", " ", "=", " ", "1"}], ";"}], " ", 
   RowBox[{"(*", 
    RowBox[{"radius", " ", "of", " ", "servo", " ", "horn"}], "*)"}], 
   "\[IndentingNewLine]", "\[IndentingNewLine]", 
   RowBox[{"(*", 
-   RowBox[{"test", " ", "parameters"}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{"test", " ", "parameters"}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
   RowBox[{
    RowBox[{"\[Phi]Range", " ", "=", " ", 
     RowBox[{"15", " ", "Degree"}]}], ";"}], " ", 
@@ -364,6 +370,20 @@ Cell[BoxData[{
     RowBox[{"roll", ",", "pitch", ",", "yaw"}], "]"}], ".", 
    "topPts"}]}], "\[IndentingNewLine]", 
  RowBox[{
+  RowBox[{
+   RowBox[{"top2", "[", 
+    RowBox[{
+    "x_", ",", "y_", ",", "z_", ",", "ux_", ",", "uy_", ",", "uz_", ",", 
+     "\[Theta]_"}], "]"}], ":=", 
+   RowBox[{
+    RowBox[{"tMat", "[", 
+     RowBox[{"x", ",", "y", ",", "z"}], "]"}], ".", 
+    RowBox[{"normMat", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"ux", ",", "uy", ",", "uz"}], "}"}], ",", "\[Theta]"}], "]"}], 
+    ".", "topPts"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
   RowBox[{"ej", "[", "in_", "]"}], ":=", 
   RowBox[{"unit", "[", 
    RowBox[{"botPts", "[", 
@@ -412,18 +432,20 @@ Cell[BoxData[{
       RowBox[{"in", ",", "1", ",", "6"}], "}"}]}], 
     "]"}]}]}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{"ePos", "[", 
-   RowBox[{"a_", ",", "b_", ",", "c_", ",", "d_", ",", "e_", ",", "f_"}], 
-   "]"}], ":=", 
   RowBox[{
+   RowBox[{"ePos", "[", 
+    RowBox[{"a_", ",", "b_", ",", "c_", ",", "d_", ",", "e_", ",", "f_"}], 
+    "]"}], ":=", 
    RowBox[{
     RowBox[{
-     RowBox[{"#", "~", "Join", "~", 
-      RowBox[{"{", "1", "}"}]}], "&"}], "/@", 
-    RowBox[{"ePos", "[", 
-     RowBox[{"{", 
-      RowBox[{"a", ",", "b", ",", "c", ",", "d", ",", "e", ",", "f"}], "}"}], 
-     "]"}]}], "//", "Transpose"}]}], "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"#", "~", "Join", "~", 
+       RowBox[{"{", "1", "}"}]}], "&"}], "/@", 
+     RowBox[{"ePos", "[", 
+      RowBox[{"{", 
+       RowBox[{"a", ",", "b", ",", "c", ",", "d", ",", "e", ",", "f"}], "}"}],
+       "]"}]}], "//", "Transpose"}]}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{"dists", "[", 
@@ -444,6 +466,27 @@ Cell[BoxData[{
          "\[Gamma]"}], "]"}]}], ")"}], "]"}]}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"dists2", "[", 
+     RowBox[{
+     "x0_", ",", "x1_", ",", "x2_", ",", "x3_", ",", "x4_", ",", "x5_", ",", 
+      "x_", ",", "y_", ",", "z_", ",", "ux_", ",", "uy_", ",", "uz_", ",", 
+      "\[Theta]_"}], "]"}], ":=", 
+    RowBox[{"norm", "/@", 
+     RowBox[{"Transpose", "[", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"ePos", "[", 
+         RowBox[{
+         "x0", ",", "x1", ",", "x2", ",", "x3", ",", "x4", ",", "x5"}], "]"}],
+         "-", 
+        RowBox[{"top2", "[", 
+         RowBox[{
+         "x", ",", "y", ",", "z", ",", "ux", ",", "uy", ",", "uz", ",", 
+          "\[Theta]"}], "]"}]}], ")"}], "]"}]}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
   RowBox[{"eqs", "[", 
    RowBox[{
    "x0_", ",", "x1_", ",", "x2_", ",", "x3_", ",", "x4_", ",", "x5_", ",", 
@@ -457,6 +500,21 @@ Cell[BoxData[{
     "x0", ",", "x1", ",", "x2", ",", "x3", ",", "x4", ",", "x5", ",", "x", 
      ",", "y", ",", "z", ",", "\[Alpha]", ",", "\[Beta]", ",", "\[Gamma]"}], 
     "]"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"eqs2", "[", 
+    RowBox[{
+    "x0_", ",", "x1_", ",", "x2_", ",", "x3_", ",", "x4_", ",", "x5_", ",", 
+     "x_", ",", "y_", ",", "z_", ",", "ux_", ",", "uy_", ",", "uz_", ",", 
+     "\[Theta]_"}], "]"}], " ", ":=", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"#", "\[Equal]", "d"}], "&"}], "/@", 
+    RowBox[{"dists2", "[", 
+     RowBox[{
+     "x0", ",", "x1", ",", "x2", ",", "x3", ",", "x4", ",", "x5", ",", "x", 
+      ",", "y", ",", "z", ",", "ux", ",", "uy", ",", "uz", ",", "\[Theta]"}], 
+     "]"}]}]}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"calc", "[", 
    RowBox[{
@@ -501,40 +559,48 @@ Cell[BoxData[{
       RowBox[{"\[Pi]", "/", "2"}]}], "}"}]}], "]"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
-   RowBox[{"ineqs", "=", 
-    RowBox[{"{", 
-     RowBox[{
-      RowBox[{"x0", "\[LessEqual]", 
-       RowBox[{"\[Pi]", "/", "2"}]}], ",", 
-      RowBox[{"x0", "\[GreaterEqual]", 
+   RowBox[{"calc2", "[", 
+    RowBox[{
+    "x_", ",", "y_", ",", "z_", ",", "ux_", ",", "uy_", ",", "uz_", ",", 
+     "\[Theta]_"}], "]"}], ":=", 
+   RowBox[{"FindRoot", "[", 
+    RowBox[{
+     RowBox[{"eqs2", "[", 
+      RowBox[{
+      "x0", ",", "x1", ",", "x2", ",", "x3", ",", "x4", ",", "x5", ",", "x", 
+       ",", "y", ",", "z", ",", "ux", ",", "uy", ",", "uz", ",", "\[Theta]"}],
+       "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x0", ",", 
        RowBox[{
-        RowBox[{"-", "\[Pi]"}], "/", "2"}]}], ",", 
-      RowBox[{"x1", "\[LessEqual]", 
-       RowBox[{"\[Pi]", "/", "2"}]}], ",", 
-      RowBox[{"x1", "\[GreaterEqual]", 
+        RowBox[{"-", "\[Pi]"}], "/", "2"}], ",", 
+       RowBox[{"\[Pi]", "/", "2"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x1", ",", 
        RowBox[{
-        RowBox[{"-", "\[Pi]"}], "/", "2"}]}], ",", 
-      RowBox[{"x2", "\[LessEqual]", 
-       RowBox[{"\[Pi]", "/", "2"}]}], ",", 
-      RowBox[{"x2", "\[GreaterEqual]", 
+        RowBox[{"-", "\[Pi]"}], "/", "2"}], ",", 
+       RowBox[{"\[Pi]", "/", "2"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x2", ",", 
        RowBox[{
-        RowBox[{"-", "\[Pi]"}], "/", "2"}]}], ",", 
-      RowBox[{"x3", "\[LessEqual]", 
-       RowBox[{"\[Pi]", "/", "2"}]}], ",", 
-      RowBox[{"x3", "\[GreaterEqual]", 
+        RowBox[{"-", "\[Pi]"}], "/", "2"}], ",", 
+       RowBox[{"\[Pi]", "/", "2"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x3", ",", 
        RowBox[{
-        RowBox[{"-", "\[Pi]"}], "/", "2"}]}], ",", 
-      RowBox[{"x4", "\[LessEqual]", 
-       RowBox[{"\[Pi]", "/", "2"}]}], ",", 
-      RowBox[{"x4", "\[GreaterEqual]", 
+        RowBox[{"-", "\[Pi]"}], "/", "2"}], ",", 
+       RowBox[{"\[Pi]", "/", "2"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x4", ",", 
        RowBox[{
-        RowBox[{"-", "\[Pi]"}], "/", "2"}]}], ",", 
-      RowBox[{"x5", "\[LessEqual]", 
-       RowBox[{"\[Pi]", "/", "2"}]}], ",", 
-      RowBox[{"x5", "\[GreaterEqual]", 
+        RowBox[{"-", "\[Pi]"}], "/", "2"}], ",", 
+       RowBox[{"\[Pi]", "/", "2"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x5", ",", 
        RowBox[{
-        RowBox[{"-", "\[Pi]"}], "/", "2"}]}]}], "}"}]}], ";"}], 
-  "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"-", "\[Pi]"}], "/", "2"}], ",", 
+       RowBox[{"\[Pi]", "/", "2"}]}], "}"}]}], "]"}]}], "\[IndentingNewLine]",
+   "\[IndentingNewLine]", 
   RowBox[{"(*", 
    RowBox[{
     RowBox[{"calc", "[", 
@@ -555,125 +621,200 @@ Cell[BoxData[{
   "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
-   RowBox[{"h", "=", "12.0"}], ";"}], 
-  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"Manipulate", "[", "\[IndentingNewLine]", "\[IndentingNewLine]", 
-   RowBox[{
-    RowBox[{"With", "[", 
-     RowBox[{
-      RowBox[{"{", 
-       RowBox[{
-        RowBox[{"ePoss", "=", 
-         RowBox[{
-          RowBox[{"ePos", "[", 
-           RowBox[{
-           "x0", ",", "x1", ",", "x2", ",", "x3", ",", "x4", ",", "x5"}], 
-           "]"}], "/.", 
-          RowBox[{"calc", "[", 
-           RowBox[{
-           "x", ",", "y", ",", "\[Alpha]", ",", "\[Beta]", ",", "h", ",", 
-            "0"}], "]"}]}]}], ",", 
-        RowBox[{"topPos", "=", 
-         RowBox[{"top", "[", 
-          RowBox[{
-          "x", ",", "y", ",", "h", ",", "\[Alpha]", ",", "\[Beta]", ",", 
-           "0"}], "]"}]}], ",", 
-        RowBox[{"sol", "=", 
-         RowBox[{"calc", "[", 
-          RowBox[{
-          "x", ",", "y", ",", "\[Alpha]", ",", "\[Beta]", ",", "h", ",", 
-           "0"}], "]"}]}]}], "}"}], ",", "\[IndentingNewLine]", 
-      "\[IndentingNewLine]", 
-      RowBox[{"{", 
-       RowBox[{
-        RowBox[{"Graphics3D", "[", 
-         RowBox[{
-          RowBox[{"modelE", "[", 
-           RowBox[{"botPts", ",", "ePoss"}], "]"}], "~", "Join", "~", 
-          RowBox[{"modelB", "[", "botPts", "]"}], "~", "Join", "~", 
-          RowBox[{"modelE", "[", 
-           RowBox[{"ePoss", ",", "topPos"}], "]"}], "~", "Join", "~", 
-          RowBox[{"modelB", "[", "topPos", "]"}]}], "]"}], ",", 
-        "\[IndentingNewLine]", 
-        RowBox[{
-         RowBox[{"dists", "[", 
-          RowBox[{
-          "x0", ",", "x1", ",", "x2", ",", "x3", ",", "x4", ",", "x5", ",", 
-           "x", ",", "y", ",", "h", ",", "\[Alpha]", ",", "\[Beta]", ",", 
-           "0"}], "]"}], "/.", "sol"}]}], "}"}]}], "\[IndentingNewLine]", 
-     "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
-    "\[IndentingNewLine]", 
-    RowBox[{"{", 
-     RowBox[{"\[Alpha]", ",", 
-      RowBox[{
-       RowBox[{"-", "20"}], "Degree"}], ",", 
-      RowBox[{"20", "Degree"}]}], "}"}], ",", 
-    RowBox[{"{", 
-     RowBox[{"\[Beta]", ",", 
-      RowBox[{
-       RowBox[{"-", "20"}], "Degree"}], ",", 
-      RowBox[{"20", "Degree"}]}], "}"}], ",", 
-    RowBox[{"{", 
-     RowBox[{"x", ",", 
-      RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", 
-    RowBox[{"{", 
-     RowBox[{"y", ",", 
-      RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", 
-    RowBox[{"{", 
-     RowBox[{"h", ",", "11", ",", "13"}], "}"}]}], "]"}], 
-  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"serial", "=", 
-   RowBox[{"DeviceOpen", "[", 
-    RowBox[{"\"\<Serial\>\"", ",", 
-     RowBox[{"{", 
-      RowBox[{"\"\<COM12\>\"", ",", 
-       RowBox[{"\"\<BaudRate\>\"", "\[Rule]", "9600"}]}], "}"}]}], "]"}]}], 
-  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
-   RowBox[{
-    RowBox[{"DeviceWriteBuffer", "[", 
-     RowBox[{"serial", ",", 
-      RowBox[{"ToString", "[", 
-       RowBox[{"Check", "[", 
-        RowBox[{
-         RowBox[{
-          RowBox[{"{", 
-           RowBox[{
-           "x0", ",", "x1", ",", "x2", ",", "x3", ",", "x4", ",", "x5"}], 
-           "}"}], "/.", 
-          RowBox[{"calc", "[", 
-           RowBox[{
-           "x", ",", "y", ",", "\[Alpha]", ",", "\[Beta]", ",", "h", ",", 
-            "\[Gamma]"}], "]"}]}], ",", 
-         RowBox[{"{", "}"}]}], "]"}], "]"}]}], "]"}], ",", 
-    "\[IndentingNewLine]", 
-    RowBox[{"{", 
-     RowBox[{"\[Alpha]", ",", 
-      RowBox[{
-       RowBox[{"-", "20"}], "Degree"}], ",", 
-      RowBox[{"20", "Degree"}]}], "}"}], ",", 
-    RowBox[{"{", 
-     RowBox[{"\[Beta]", ",", 
-      RowBox[{
-       RowBox[{"-", "20"}], "Degree"}], ",", 
-      RowBox[{"20", "Degree"}]}], "}"}], ",", 
-    RowBox[{"{", 
-     RowBox[{"x", ",", 
-      RowBox[{"-", "2"}], ",", "2"}], "}"}], ",", 
-    RowBox[{"{", 
-     RowBox[{"y", ",", 
-      RowBox[{"-", "2"}], ",", "2"}], "}"}], ",", 
-    RowBox[{"{", 
-     RowBox[{"h", ",", "11", ",", "15"}], "}"}], ",", 
-    RowBox[{"{", 
-     RowBox[{"\[Gamma]", ",", 
-      RowBox[{
-       RowBox[{"-", "30"}], " ", "Degree"}], ",", 
-      RowBox[{"30", "Degree"}]}], "}"}]}], "]"}], "\[IndentingNewLine]", 
+   RowBox[{"h", "=", "12.43"}], ";"}], "\[IndentingNewLine]", 
   "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"Manipulate", "[", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"With", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"ePoss", "=", 
+          RowBox[{
+           RowBox[{"ePos", "[", 
+            RowBox[{
+            "x0", ",", "x1", ",", "x2", ",", "x3", ",", "x4", ",", "x5"}], 
+            "]"}], "/.", 
+           RowBox[{"calc", "[", 
+            RowBox[{
+            "x", ",", "y", ",", "\[Alpha]", ",", "\[Beta]", ",", "h", ",", 
+             "0"}], "]"}]}]}], ",", 
+         RowBox[{"topPos", "=", 
+          RowBox[{"top", "[", 
+           RowBox[{
+           "x", ",", "y", ",", "h", ",", "\[Alpha]", ",", "\[Beta]", ",", 
+            "0"}], "]"}]}], ",", 
+         RowBox[{"sol", "=", 
+          RowBox[{"calc", "[", 
+           RowBox[{
+           "x", ",", "y", ",", "\[Alpha]", ",", "\[Beta]", ",", "h", ",", 
+            "0"}], "]"}]}]}], "}"}], ",", "\[IndentingNewLine]", 
+       "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Graphics3D", "[", 
+          RowBox[{
+           RowBox[{"modelE", "[", 
+            RowBox[{"botPts", ",", "ePoss"}], "]"}], "~", "Join", "~", 
+           RowBox[{"modelB", "[", "botPts", "]"}], "~", "Join", "~", 
+           RowBox[{"modelE", "[", 
+            RowBox[{"ePoss", ",", "topPos"}], "]"}], "~", "Join", "~", 
+           RowBox[{"modelB", "[", "topPos", "]"}]}], "]"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"dists", "[", 
+           RowBox[{
+           "x0", ",", "x1", ",", "x2", ",", "x3", ",", "x4", ",", "x5", ",", 
+            "x", ",", "y", ",", "h", ",", "\[Alpha]", ",", "\[Beta]", ",", 
+            "0"}], "]"}], "/.", "sol"}]}], "}"}]}], "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", "]"}], ",", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{"\[Alpha]", ",", 
+       RowBox[{
+        RowBox[{"-", "20"}], "Degree"}], ",", 
+       RowBox[{"20", "Degree"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"\[Beta]", ",", 
+       RowBox[{
+        RowBox[{"-", "20"}], "Degree"}], ",", 
+       RowBox[{"20", "Degree"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"y", ",", 
+       RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"h", ",", "11", ",", "13"}], "}"}]}], "]"}], "*)"}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"serial", "=", 
+    RowBox[{"DeviceOpen", "[", 
+     RowBox[{"\"\<Serial\>\"", ",", 
+      RowBox[{"{", 
+       RowBox[{"\"\<COM12\>\"", ",", 
+        RowBox[{"\"\<BaudRate\>\"", "\[Rule]", "9600"}]}], "}"}]}], "]"}]}], 
+   "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"DeviceWriteBuffer", "[", 
+      RowBox[{"serial", ",", 
+       RowBox[{"ToString", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"-", "r"}], " ", 
+           RowBox[{"Cos", "[", "\[Theta]", "]"}]}], ",", 
+          RowBox[{
+           RowBox[{"-", "r"}], " ", 
+           RowBox[{"Sin", "[", "\[Theta]", "]"}]}], ",", 
+          RowBox[{
+           RowBox[{"Sin", "[", "\[Phi]", "]"}], 
+           RowBox[{"Cos", "[", "\[Theta]", "]"}]}], ",", 
+          RowBox[{
+           RowBox[{"Sin", "[", "\[Phi]", "]"}], 
+           RowBox[{"Sin", "[", "\[Theta]", "]"}]}], ",", 
+          RowBox[{"Cos", "[", "\[Phi]", "]"}]}], "}"}], "]"}]}], "]"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{"r", ",", "0", ",", "4"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"\[Theta]", ",", "0", ",", 
+       RowBox[{"2", "\[Pi]"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"\[Phi]", ",", "0", ",", 
+       RowBox[{"20", "Degree"}]}], "}"}]}], "]"}], "*)"}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"serial", "=", 
+    RowBox[{
+     RowBox[{"DeviceOpen", "[", 
+      RowBox[{"\"\<Serial\>\"", ",", 
+       RowBox[{"{", 
+        RowBox[{"\"\<COM12\>\"", ",", 
+         RowBox[{"\"\<BaudRate\>\"", "\[Rule]", "9600"}]}], "}"}]}], "]"}], 
+     "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"DeviceWriteBuffer", "[", 
+        RowBox[{"serial", ",", 
+         RowBox[{"ToString", "[", 
+          RowBox[{"Check", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{
+              "x0", ",", "x1", ",", "x2", ",", "x3", ",", "x4", ",", "x5"}], 
+              "}"}], "/.", 
+             RowBox[{"calc2", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"-", "r"}], " ", 
+                RowBox[{"Cos", "[", "\[Theta]", "]"}]}], ",", 
+               RowBox[{
+                RowBox[{"-", "r"}], " ", 
+                RowBox[{"Sin", "[", "\[Theta]", "]"}]}], ",", "h", ",", 
+               RowBox[{
+                RowBox[{"Sin", "[", "\[Phi]", "]"}], 
+                RowBox[{"Cos", "[", "\[Theta]", "]"}]}], ",", 
+               RowBox[{
+                RowBox[{"Sin", "[", "\[Phi]", "]"}], 
+                RowBox[{"Sin", "[", "\[Theta]", "]"}]}], ",", 
+               RowBox[{"Cos", "[", "\[Phi]", "]"}], ",", "\[Gamma]"}], 
+              "]"}]}], ",", 
+            RowBox[{"{", "}"}]}], "]"}], "]"}]}], "]"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{"r", ",", "0", ",", "4"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"\[Theta]", ",", "0", ",", 
+         RowBox[{"2", "\[Pi]"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"\[Phi]", ",", "0", ",", 
+         RowBox[{"20", "Degree"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"\[Gamma]", ",", 
+         RowBox[{
+          RowBox[{"-", "90"}], " ", "Degree"}], ",", 
+         RowBox[{"90", " ", "Degree"}]}], "}"}]}], "]"}]}]}], "*)"}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"dfuns", " ", "=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"Simplify", "[", 
+        RowBox[{"dists2", "[", 
+         RowBox[{
+         "x0", ",", "x1", ",", "x2", ",", "x3", ",", "x4", ",", "x5", ",", 
+          "x", ",", "y", ",", "z", ",", "ux", ",", "uy", ",", "uz", ",", 
+          "\[Gamma]"}], "]"}], "]"}], "//", "Simplify"}], "//", "N"}]}], 
+    ";"}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"dfuns", " ", "=", 
+    RowBox[{"Simplify", "[", 
+     RowBox[{"dists", "[", 
+      RowBox[{
+      "x0", ",", "x1", ",", "x2", ",", "x3", ",", "x4", ",", "x5", ",", "x", 
+       ",", "y", ",", "z", ",", "a", ",", "b", ",", "g"}], "]"}], "]"}]}], 
+   "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{"dfunsp", "=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"Diagonal", "[", 
+        RowBox[{"D", "[", 
+         RowBox[{"dfuns", ",", 
+          RowBox[{"{", 
+           RowBox[{"{", 
+            RowBox[{
+            "x0", ",", "x1", ",", "x2", ",", "x3", ",", "x4", ",", "x5"}], 
+            "}"}], "}"}]}], "]"}], "]"}], "//", "Simplify"}], "//", "N"}]}], 
+    ";"}], "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
   RowBox[{"(*", 
    RowBox[{"Manipulate", "[", 
     RowBox[{
@@ -745,6 +886,38 @@ Cell[BoxData[{
       RowBox[{"h", ",", "12", ",", "12"}], "}"}], ",", 
      RowBox[{"{", 
       RowBox[{"\[Gamma]", ",", "0", ",", "0"}], "}"}]}], "]"}], "*)"}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+         "x0", ",", "x1", ",", "x2", ",", "x3", ",", "x4", ",", "x5"}], "}"}],
+         "/.", 
+        RowBox[{"calc2", "[", 
+         RowBox[{
+         "x", ",", "y", ",", "h", ",", "ux", ",", "uy", ",", "uz", ",", "0"}],
+          "]"}]}], ",", 
+       RowBox[{"{", 
+        RowBox[{"x", ",", "y", ",", "ux", ",", "uy", ",", "uz"}], "}"}]}], 
+      "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"y", ",", 
+       RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"ux", ",", 
+       RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"uy", ",", 
+       RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"uz", ",", "0", ",", "1"}], "}"}]}], "]"}], "*)"}], 
   "\[IndentingNewLine]", "\[IndentingNewLine]", "\[IndentingNewLine]", 
   "\[IndentingNewLine]"}], "\[IndentingNewLine]"}], "Input",
  CellChangeTimes->{{3.7187040252505984`*^9, 3.718704085643246*^9}, {
@@ -836,104 +1009,652 @@ Cell[BoxData[{
    3.7189988279477377`*^9}, {3.718998973712096*^9, 3.718998982649592*^9}, {
    3.7189991401939745`*^9, 3.718999163237747*^9}, {3.718999318052987*^9, 
    3.7189993194120255`*^9}, {3.7189998870334034`*^9, 3.718999906565539*^9}, {
-   3.7190001821454053`*^9, 3.7190001822124047`*^9}}],
+   3.7190001821454053`*^9, 3.7190001822124047`*^9}, {3.719053150154147*^9, 
+   3.7190531757010517`*^9}, {3.719053264935272*^9, 3.719053508794112*^9}, {
+   3.7190536002623525`*^9, 3.719053889650239*^9}, {3.7190540022182093`*^9, 
+   3.719054007140027*^9}, {3.71905430943335*^9, 3.719054337558203*^9}, {
+   3.719054388464302*^9, 3.719054390276609*^9}, {3.7190549128075666`*^9, 
+   3.7190549131982203`*^9}, {3.7190552441858163`*^9, 
+   3.7190552770987372`*^9}, {3.7190560427649136`*^9, 
+   3.7190560462167635`*^9}, {3.7190563560738835`*^9, 3.719056378370945*^9}, {
+   3.7190564184959545`*^9, 3.719056501948619*^9}, {3.7190566922131453`*^9, 
+   3.7190566923850093`*^9}, {3.719056800789826*^9, 3.7190568615395136`*^9}, {
+   3.7190569120546675`*^9, 3.719056912601712*^9}, {3.719058505964386*^9, 
+   3.7190585204021797`*^9}, {3.719060495031185*^9, 3.719060498999769*^9}, {
+   3.719060557310763*^9, 3.719060557701561*^9}, {3.7190605895599327`*^9, 
+   3.719060630824106*^9}, {3.71906072474302*^9, 3.7190607478829374`*^9}, {
+   3.7190609569930253`*^9, 3.7190609659489555`*^9}, {3.71906144173975*^9, 
+   3.7190614708644047`*^9}, {3.7190755427527556`*^9, 3.719075570065179*^9}, {
+   3.719075645267812*^9, 3.719075677470796*^9}, {3.719075774133314*^9, 
+   3.71907580861666*^9}, {3.7190760943418303`*^9, 3.7190760970763054`*^9}, {
+   3.7190761451227913`*^9, 3.7190762643893595`*^9}, {3.71907644258747*^9, 
+   3.7190764587907763`*^9}, {3.7191120541078043`*^9, 
+   3.7191121714969873`*^9}, {3.71911226519895*^9, 3.7191122655739326`*^9}, {
+   3.71911231576099*^9, 3.7191123171984634`*^9}, {3.7191128510662084`*^9, 
+   3.7191128535037127`*^9}}],
 
 Cell[BoxData[
- TagBox[
-  StyleBox[
-   DynamicModuleBox[{$CellContext`h$$ = 
-    11, $CellContext`x$$ = -1, $CellContext`y$$ = -1, $CellContext`\[Alpha]$$ \
-= (-20) Degree, $CellContext`\[Beta]$$ = (-20) Degree, Typeset`show$$ = True, 
-    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
-    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
-    "\"untitled\"", Typeset`specs$$ = {{
-      Hold[$CellContext`\[Alpha]$$], (-20) Degree, 20 Degree}, {
-      Hold[$CellContext`\[Beta]$$], (-20) Degree, 20 Degree}, {
-      Hold[$CellContext`x$$], -1, 1}, {
-      Hold[$CellContext`y$$], -1, 1}, {
-      Hold[$CellContext`h$$], 11, 13}}, Typeset`size$$ = {663., {127., 132.}},
-     Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = 
-    True, $CellContext`\[Alpha]$256102$$ = 0, $CellContext`\[Beta]$256103$$ = 
-    0, $CellContext`x$256104$$ = 0, $CellContext`y$256105$$ = 
-    0, $CellContext`h$256106$$ = 0}, 
-    DynamicBox[Manipulate`ManipulateBoxes[
-     1, StandardForm, 
-      "Variables" :> {$CellContext`h$$ = 
-        11, $CellContext`x$$ = -1, $CellContext`y$$ = -1, $CellContext`\
-\[Alpha]$$ = (-20) Degree, $CellContext`\[Beta]$$ = (-20) Degree}, 
-      "ControllerVariables" :> {
-        Hold[$CellContext`\[Alpha]$$, $CellContext`\[Alpha]$256102$$, 0], 
-        Hold[$CellContext`\[Beta]$$, $CellContext`\[Beta]$256103$$, 0], 
-        Hold[$CellContext`x$$, $CellContext`x$256104$$, 0], 
-        Hold[$CellContext`y$$, $CellContext`y$256105$$, 0], 
-        Hold[$CellContext`h$$, $CellContext`h$256106$$, 0]}, 
-      "OtherVariables" :> {
-       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
-        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
-        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
-         Typeset`skipInitDone$$}, "Body" :> 
-      With[{$CellContext`ePoss$ = ReplaceAll[
-           $CellContext`ePos[$CellContext`x0, $CellContext`x1, \
-$CellContext`x2, $CellContext`x3, $CellContext`x4, $CellContext`x5], 
-           $CellContext`calc[$CellContext`x$$, $CellContext`y$$, \
-$CellContext`\[Alpha]$$, $CellContext`\[Beta]$$, $CellContext`h$$, 
-            0]], $CellContext`topPos$ = $CellContext`top[$CellContext`x$$, \
-$CellContext`y$$, $CellContext`h$$, $CellContext`\[Alpha]$$, $CellContext`\
-\[Beta]$$, 
-           0], $CellContext`sol$ = $CellContext`calc[$CellContext`x$$, \
-$CellContext`y$$, $CellContext`\[Alpha]$$, $CellContext`\[Beta]$$, \
-$CellContext`h$$, 0]}, {
-         Graphics3D[
-          Join[
-           Join[
-            Join[
-             $CellContext`modelE[$CellContext`botPts, $CellContext`ePoss$], 
-             $CellContext`modelB[$CellContext`botPts]], 
-            $CellContext`modelE[$CellContext`ePoss$, $CellContext`topPos$]], 
-           $CellContext`modelB[$CellContext`topPos$]]], 
-         ReplaceAll[
-          $CellContext`dists[$CellContext`x0, $CellContext`x1, \
-$CellContext`x2, $CellContext`x3, $CellContext`x4, $CellContext`x5, \
-$CellContext`x$$, $CellContext`y$$, $CellContext`h$$, \
-$CellContext`\[Alpha]$$, $CellContext`\[Beta]$$, 0], $CellContext`sol$]}], 
-      "Specifications" :> {{$CellContext`\[Alpha]$$, (-20) Degree, 20 
-         Degree}, {$CellContext`\[Beta]$$, (-20) Degree, 20 
-         Degree}, {$CellContext`x$$, -1, 1}, {$CellContext`y$$, -1, 
-         1}, {$CellContext`h$$, 11, 13}}, "Options" :> {}, 
-      "DefaultOptions" :> {}],
-     ImageSizeCache->{720., {237., 244.}},
-     SingleEvaluation->True],
-    Deinitialization:>None,
-    DynamicModuleValues:>{},
-    SynchronousInitialization->True,
-    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
-    UnsavedVariables:>{Typeset`initDone$$},
-    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
-   Deployed->True,
-   StripOnInput->False],
-  Manipulate`InterpretManipulate[1]]], "Output",
+ RowBox[{"dfuns", "//", "CForm"}]], "Input",
+ CellChangeTimes->{{3.7191122240276203`*^9, 3.7191123077454586`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"DeviceClose", "[", "serial", "]"}]], "Input",
+ CellChangeTimes->{{3.718734212962529*^9, 3.718734218774084*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"DeviceReadBuffer", "[", "serial", "]"}], "//", 
+  "FromCharacterCode"}]], "Input",
+ CellChangeTimes->{{3.7191156237238073`*^9, 3.719115628661297*^9}, {
+  3.7191156883479223`*^9, 3.7191156885985374`*^9}}],
+
+Cell[BoxData["\<\" to converge at start\\r\\nFailed to converge at \
+start\\r\\n{-0.432492,0,0,0,0\\r\\n-0.43\\r\\n0.00\\r\\n0.00\\r\\n0.00\\r\\n0.\
+00\\r\\n0.00\\r\\n\\r\\n\\r\\n\"\>"], "Output",
+ CellChangeTimes->{3.719117476636925*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"ControllerInformation", "[", "]"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"x", "=", "0"}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"y", "=", "0"}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"MaxTilt", "=", 
+     RowBox[{"Pi", "/", "8"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"MaxTwist", "=", 
+     RowBox[{"Pi", "/", "8"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"MaxDisp", " ", "=", " ", ".1"}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"speed", " ", "=", ".01"}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Clamp", "[", 
+     RowBox[{"a_", ",", "min_", ",", "max_"}], "]"}], ":=", 
+    RowBox[{"Max", "[", 
+     RowBox[{
+      RowBox[{"Min", "[", 
+       RowBox[{"a", ",", "max"}], "]"}], ",", "min"}], "]"}]}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"serial", "=", 
+    RowBox[{"DeviceOpen", "[", 
+     RowBox[{"\"\<Serial\>\"", ",", 
+      RowBox[{"{", 
+       RowBox[{"\"\<COM12\>\"", ",", 
+        RowBox[{"\"\<BaudRate\>\"", "\[Rule]", "9600"}]}], "}"}]}], "]"}]}], 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"serial", "=", 
+     RowBox[{"DeviceOpen", "[", "\"\<WriteDemo\>\"", "]"}]}], "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{"ControllerManipulate", "[", 
+    RowBox[{
+     RowBox[{"DeviceWriteBuffer", "[", 
+      RowBox[{"serial", ",", 
+       RowBox[{"ToString", "[", 
+        RowBox[{"{", 
+         RowBox[{"x", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], 
+        "]"}]}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", 
+     RowBox[{"ControllerPath", "\[Rule]", " ", "\"\<Joystick\>\""}], ",", " ", 
+     RowBox[{"ControllerLinking", "\[Rule]", "All"}]}], "]"}], 
+   "\[IndentingNewLine]"}]}]], "Input",
+ CellChangeTimes->CompressedData["
+1:eJwdyF1IU3EAQPFrGUQZzFmUKWMTalSuKCbURqgtWSCIhbXLglL7kqBaCtVT
+FEiJbY7ESSskc2kyJBT0QbQPNC656jqkhQ4hR5FLI4gMFVZ2z//h8INjqr5y
+7NwqSZLMWrh029IUGpgvdtxUmjFjUQnigRsHH2JA2hDGSqlS+MGR3o/PF0aF
+s96vw+hJrbzF1f6oivuv1k/i9LzhM26v+ZvApUTVdzSeKviJfvfZBYzLxj+4
+Nja3jH3Hs1J4b6JYeqrZXXR5Hdp7r23B39mBrejdIW9DeajEhkcKsgtxJVzn
+xHjnaCn2Zr0/iZFGVzUqvrZLeLphfS1G71TUYTKYcx097161463pvC6s/bGm
+By1PGjZ1alrbA8LWjmgORsJTFsy98KgQ678li3Dyi8+Jd1vKj+I/n+zGRsP4
+GXS1uDy4d+N9odnaNo75VjmKySb7Ipb5U8s4p87qujRVNaHH5hHVjcZPSpUw
+f+i8+G821+BUqb4V+8dsD/BEifIYD4/0hXAsI30A04KRQXSGJl6Iv8v7Gg2Z
+zo+Y0OliuC/TEseA3iH8lbfb/EwzZrLvxBlz2h682G0Svhw+ZMPcmVgZ/gco
+oWLP
+  "]],
+
+Cell[BoxData[
+ InterpretationBox[
+  PanelBox[
+   StyleBox[GridBox[{
+      {
+       DynamicModuleBox[{System`InfoDump`open$$ = False}, 
+        PaneSelectorBox[{False->
+         RowBox[{
+          OpenerBox[Dynamic[System`InfoDump`open$$]], "   ", 
+          StyleBox[
+           TemplateBox[{StyleBox[
+              DynamicBox[
+               ToBoxes[
+                FEPrivate`FrontEndResource[
+                "SystemInformationDialog", "ControllerDeviceText"], 
+                StandardForm]], DynamicUpdating -> True, StripOnInput -> 
+              False],"\" \"","\"1\"","\": \"","\"Airplane Mode Switch\""},
+            "RowDefault"],
+           StripOnInput->False,
+           FontWeight->Bold]}], True->GridBox[{
+           {
+            RowBox[{
+             OpenerBox[Dynamic[System`InfoDump`open$$]], "   ", 
+             StyleBox[
+              TemplateBox[{StyleBox[
+                 DynamicBox[
+                  ToBoxes[
+                   FEPrivate`FrontEndResource[
+                   "SystemInformationDialog", "ControllerDeviceText"], 
+                   StandardForm]], DynamicUpdating -> True, StripOnInput -> 
+                 False],"\" \"","\"1\"","\": \"","\"Airplane Mode Switch\""},
+               "RowDefault"],
+              StripOnInput->False,
+              FontWeight->Bold]}]},
+           {GridBox[{
+              {"\<\"Raw Product Name\"\>", "\<\"\\\"Airplane Mode \
+Switch\\\"\"\>"},
+              {"\<\"Raw Product ID\"\>", "43982"},
+              {"\<\"Device Type\"\>", "\<\"Windows DirectInput Device\"\>"},
+              {"\<\"Raw Controller Type\"\>", "\<\"External Controller\"\>"},
+              {"\<\"Wolfram Language Controls\"\>", 
+               DynamicModuleBox[{System`InfoDump`open$$ = False}, 
+                PaneSelectorBox[{False->
+                 RowBox[{
+                  OpenerBox[Dynamic[System`InfoDump`open$$]], "   ", 
+                  StyleBox[
+                   RowBox[{"0", "\[InvisibleSpace]", 
+                    StyleBox[
+                    DynamicBox[ToBoxes[
+                    FEPrivate`FrontEndResource[
+                    "SystemInformationDialog", "ControlsSmallText"], 
+                    StandardForm]],
+                    StripOnInput->False,
+                    DynamicUpdating->True]}], "IT",
+                   StripOnInput->False]}], True->GridBox[{
+                   {
+                    RowBox[{
+                    OpenerBox[Dynamic[System`InfoDump`open$$]], "   ", 
+                    StyleBox[
+                    RowBox[{"0", "\[InvisibleSpace]", 
+                    StyleBox[
+                    DynamicBox[ToBoxes[
+                    FEPrivate`FrontEndResource[
+                    "SystemInformationDialog", "ControlsSmallText"], 
+                    StandardForm]],
+                    StripOnInput->False,
+                    DynamicUpdating->True]}], "IT",
+                    StripOnInput->False]}]},
+                   {"\<\"\[Null]\"\>"}
+                  },
+                  BaselinePosition->{Baseline, {1, 1}},
+                  DefaultBaseStyle->"Column",
+                  GridBoxAlignment->{"Columns" -> {{Left}}},
+                  
+                  GridBoxItemSize->{
+                   "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, 
+                    "Rows" -> {{1.}}, "RowsIndexed" -> {}}]}, Dynamic[
+                 System`InfoDump`open$$],
+                 BaselinePosition->Baseline,
+                 FrameMargins->0,
+                 ImageSize->Automatic],
+                DynamicModuleValues:>{}]},
+              {"\<\"Raw Controls\"\>", 
+               DynamicModuleBox[{System`InfoDump`open$$ = False}, 
+                PaneSelectorBox[{False->
+                 RowBox[{
+                  OpenerBox[Dynamic[System`InfoDump`open$$]], "   ", 
+                  StyleBox[
+                   RowBox[{"1", "\[InvisibleSpace]", 
+                    StyleBox[
+                    DynamicBox[ToBoxes[
+                    FEPrivate`FrontEndResource[
+                    "SystemInformationDialog", "ControlsSmallText"], 
+                    StandardForm]],
+                    StripOnInput->False,
+                    DynamicUpdating->True]}], "IT",
+                   StripOnInput->False]}], True->GridBox[{
+                   {
+                    RowBox[{
+                    OpenerBox[Dynamic[System`InfoDump`open$$]], "   ", 
+                    StyleBox[
+                    RowBox[{"1", "\[InvisibleSpace]", 
+                    StyleBox[
+                    DynamicBox[ToBoxes[
+                    FEPrivate`FrontEndResource[
+                    "SystemInformationDialog", "ControlsSmallText"], 
+                    StandardForm]],
+                    StripOnInput->False,
+                    DynamicUpdating->True]}], "IT",
+                    StripOnInput->False]}]},
+                   {
+                    
+                    DynamicModuleBox[{System`InfoDump`dynamic$$ = True}, 
+                    GridBox[{
+                    {
+                    PaneSelectorBox[{False->GridBox[{
+                    {"\<\"GenericDesktop:198 Button\"\>", "False"}
+                    },
+                    AutoDelete->False,
+                    
+                    GridBoxAlignment->{
+                    "Columns" -> {Right, {Left}}, "ColumnsIndexed" -> {}, 
+                    "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+                    
+                    GridBoxItemSize->{
+                    "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}], 
+                    True->
+                    DynamicBox[ToBoxes[
+                    Grid[
+                    Transpose[{{"GenericDesktop:198 Button"}, 
+                    ControllerState[1, {"GenericDesktop:198 Button"}]}], 
+                    ColumnAlignments -> {Right, Left}, StripOnInput -> True], 
+                    StandardForm]]}, Dynamic[System`InfoDump`dynamic$$]]},
+                    {
+                    TemplateBox[{CheckboxBox[
+                    Dynamic[System`InfoDump`dynamic$$], ImageSize -> Small],
+                    "\" Show Dynamic Values\""},
+                    "RowDefault"]}
+                    },
+                    DefaultBaseStyle->"Column",
+                    GridBoxAlignment->{"Columns" -> {{Left}}},
+                    
+                    GridBoxItemSize->{
+                    "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+                    DynamicModuleValues:>{}]}
+                  },
+                  BaselinePosition->{Baseline, {1, 1}},
+                  DefaultBaseStyle->"Column",
+                  GridBoxAlignment->{"Columns" -> {{Left}}},
+                  
+                  GridBoxItemSize->{
+                   "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, 
+                    "Rows" -> {{1.}}, "RowsIndexed" -> {}}]}, Dynamic[
+                 System`InfoDump`open$$],
+                 BaselinePosition->Baseline,
+                 FrameMargins->0,
+                 ImageSize->Automatic],
+                DynamicModuleValues:>{}]}
+             },
+             AutoDelete->False,
+             GridBoxAlignment->{"Columns" -> {Right, Left}},
+             GridBoxDividers->{"Rows" -> {{False}, 
+                 GrayLevel[0, 0.2]}},
+             GridBoxItemSize->{"Columns" -> {14, 33.92307692307692}},
+             GridBoxSpacings->{"Columns" -> {
+                 Offset[0.28], {
+                  Offset[0.84]}, 
+                 Offset[0.28]}, "Rows" -> {
+                 Offset[0.2], {
+                  Offset[0.48]}, 
+                 Offset[0.2]}}]}
+          },
+          DefaultBaseStyle->"Column",
+          GridBoxAlignment->{"Columns" -> {{Left}}},
+          
+          GridBoxItemSize->{
+           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}]}, Dynamic[
+         System`InfoDump`open$$],
+         ImageSize->Automatic],
+        DynamicModuleValues:>{}]},
+      {
+       DynamicModuleBox[{System`InfoDump`open$$ = False}, 
+        PaneSelectorBox[{False->
+         RowBox[{
+          OpenerBox[Dynamic[System`InfoDump`open$$]], "   ", 
+          StyleBox[
+           TemplateBox[{StyleBox[
+              DynamicBox[
+               ToBoxes[
+                FEPrivate`FrontEndResource[
+                "SystemInformationDialog", "ControllerDeviceText"], 
+                StandardForm]], DynamicUpdating -> True, StripOnInput -> 
+              False],"\" \"","\"2\"","\": \"",
+             "\"SideWinder Precision 2 Joystick\""},
+            "RowDefault"],
+           StripOnInput->False,
+           FontWeight->Bold]}], True->GridBox[{
+           {
+            RowBox[{
+             OpenerBox[Dynamic[System`InfoDump`open$$]], "   ", 
+             StyleBox[
+              TemplateBox[{StyleBox[
+                 DynamicBox[
+                  ToBoxes[
+                   FEPrivate`FrontEndResource[
+                   "SystemInformationDialog", "ControllerDeviceText"], 
+                   StandardForm]], DynamicUpdating -> True, StripOnInput -> 
+                 False],"\" \"","\"2\"","\": \"",
+                "\"SideWinder Precision 2 Joystick\""},
+               "RowDefault"],
+              StripOnInput->False,
+              FontWeight->Bold]}]},
+           {GridBox[{
+              {"\<\"Raw Product Name\"\>", "\<\"\\\"SideWinder Precision 2 \
+Joystick\\\"\"\>"},
+              {"\<\"Raw Product ID\"\>", "56"},
+              {"\<\"Device Type\"\>", "\<\"Windows DirectInput Device\"\>"},
+              {"\<\"Raw Controller Type\"\>", "\<\"Joystick\"\>"},
+              {"\<\"Wolfram Language Controls\"\>", 
+               DynamicModuleBox[{System`InfoDump`open$$ = False}, 
+                PaneSelectorBox[{False->
+                 RowBox[{
+                  OpenerBox[Dynamic[System`InfoDump`open$$]], "   ", 
+                  StyleBox[
+                   RowBox[{"24", "\[InvisibleSpace]", 
+                    StyleBox[
+                    DynamicBox[ToBoxes[
+                    FEPrivate`FrontEndResource[
+                    "SystemInformationDialog", "ControlsSmallText"], 
+                    StandardForm]],
+                    StripOnInput->False,
+                    DynamicUpdating->True]}], "IT",
+                   StripOnInput->False]}], True->GridBox[{
+                   {
+                    RowBox[{
+                    OpenerBox[Dynamic[System`InfoDump`open$$]], "   ", 
+                    StyleBox[
+                    RowBox[{"24", "\[InvisibleSpace]", 
+                    StyleBox[
+                    DynamicBox[ToBoxes[
+                    FEPrivate`FrontEndResource[
+                    "SystemInformationDialog", "ControlsSmallText"], 
+                    StandardForm]],
+                    StripOnInput->False,
+                    DynamicUpdating->True]}], "IT",
+                    StripOnInput->False]}]},
+                   {
+                    
+                    DynamicModuleBox[{System`InfoDump`dynamic$$ = True}, 
+                    GridBox[{
+                    {
+                    PaneSelectorBox[{False->GridBox[{
+                    {"\<\"X\"\>", 
+                    RowBox[{"-", "0.000015259021896696368`"}]},
+                    {"\<\"Y\"\>", "0.000015259021896696368`"},
+                    {"\<\"X1\"\>", 
+                    RowBox[{"-", "0.000015259021896696368`"}]},
+                    {"\<\"Y1\"\>", "0.000015259021896696368`"},
+                    {"\<\"X2\"\>", 
+                    RowBox[{"-", "0.000015259021896696368`"}]},
+                    {"\<\"Y2\"\>", "0.000015259021896696368`"},
+                    {"\<\"X3\"\>", "0.`"},
+                    {"\<\"Y3\"\>", "0.`"},
+                    {"\<\"X4\"\>", "0"},
+                    {"\<\"Y4\"\>", "0"},
+                    {"\<\"X5\"\>", "0"},
+                    {"\<\"Y5\"\>", "0"},
+                    {"\<\"B1\"\>", "False"},
+                    {"\<\"B2\"\>", "False"},
+                    {"\<\"B3\"\>", "False"},
+                    {"\<\"B4\"\>", "False"},
+                    {"\<\"B5\"\>", "False"},
+                    {"\<\"B6\"\>", "False"},
+                    {"\<\"B7\"\>", "False"},
+                    {"\<\"B8\"\>", "False"},
+                    {"\<\"BLB\"\>", "False"},
+                    {"\<\"BRB\"\>", "False"},
+                    {"\<\"TLB\"\>", "False"},
+                    {"\<\"TRB\"\>", "False"}
+                    },
+                    AutoDelete->False,
+                    
+                    GridBoxAlignment->{
+                    "Columns" -> {Right, {Left}}, "ColumnsIndexed" -> {}, 
+                    "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+                    
+                    GridBoxItemSize->{
+                    "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}], 
+                    True->
+                    DynamicBox[ToBoxes[
+                    Grid[
+                    
+                    Transpose[{{
+                    "X", "Y", "X1", "Y1", "X2", "Y2", "X3", "Y3", "X4", "Y4", 
+                    "X5", "Y5", "B1", "B2", "B3", "B4", "B5", "B6", "B7", 
+                    "B8", "BLB", "BRB", "TLB", "TRB"}, 
+                    ControllerState[
+                    2, {"X", "Y", "X1", "Y1", "X2", "Y2", "X3", "Y3", "X4", 
+                    "Y4", "X5", "Y5", "B1", "B2", "B3", "B4", "B5", "B6", 
+                    "B7", "B8", "BLB", "BRB", "TLB", "TRB"}]}], 
+                    ColumnAlignments -> {Right, Left}, StripOnInput -> True], 
+                    StandardForm]]}, Dynamic[System`InfoDump`dynamic$$]]},
+                    {
+                    TemplateBox[{CheckboxBox[
+                    Dynamic[System`InfoDump`dynamic$$], ImageSize -> Small],
+                    "\" Show Dynamic Values\""},
+                    "RowDefault"]}
+                    },
+                    DefaultBaseStyle->"Column",
+                    GridBoxAlignment->{"Columns" -> {{Left}}},
+                    
+                    GridBoxItemSize->{
+                    "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+                    DynamicModuleValues:>{}]}
+                  },
+                  BaselinePosition->{Baseline, {1, 1}},
+                  DefaultBaseStyle->"Column",
+                  GridBoxAlignment->{"Columns" -> {{Left}}},
+                  
+                  GridBoxItemSize->{
+                   "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, 
+                    "Rows" -> {{1.}}, "RowsIndexed" -> {}}]}, Dynamic[
+                 System`InfoDump`open$$],
+                 BaselinePosition->Baseline,
+                 FrameMargins->0,
+                 ImageSize->Automatic],
+                DynamicModuleValues:>{}]},
+              {"\<\"Raw Controls\"\>", 
+               DynamicModuleBox[{System`InfoDump`open$$ = False}, 
+                PaneSelectorBox[{False->
+                 RowBox[{
+                  OpenerBox[Dynamic[System`InfoDump`open$$]], "   ", 
+                  StyleBox[
+                   RowBox[{"14", "\[InvisibleSpace]", 
+                    StyleBox[
+                    DynamicBox[ToBoxes[
+                    FEPrivate`FrontEndResource[
+                    "SystemInformationDialog", "ControlsSmallText"], 
+                    StandardForm]],
+                    StripOnInput->False,
+                    DynamicUpdating->True]}], "IT",
+                   StripOnInput->False]}], True->GridBox[{
+                   {
+                    RowBox[{
+                    OpenerBox[Dynamic[System`InfoDump`open$$]], "   ", 
+                    StyleBox[
+                    RowBox[{"14", "\[InvisibleSpace]", 
+                    StyleBox[
+                    DynamicBox[ToBoxes[
+                    FEPrivate`FrontEndResource[
+                    "SystemInformationDialog", "ControlsSmallText"], 
+                    StandardForm]],
+                    StripOnInput->False,
+                    DynamicUpdating->True]}], "IT",
+                    StripOnInput->False]}]},
+                   {
+                    
+                    DynamicModuleBox[{System`InfoDump`dynamic$$ = True}, 
+                    GridBox[{
+                    {
+                    PaneSelectorBox[{False->GridBox[{
+                    {"\<\"Y Axis\"\>", 
+                    RowBox[{"-", "0.000015259021896696368`"}]},
+                    {"\<\"X Axis\"\>", 
+                    RowBox[{"-", "0.000015259021896696368`"}]},
+                    {"\<\"Slider\"\>", 
+                    RowBox[{"-", "1.`"}]},
+                    {"\<\"Z Rotation\"\>", 
+                    RowBox[{"-", "0.000015259021896696368`"}]},
+                    {"\<\"Hatswitch X Axis\"\>", "0.`"},
+                    {"\<\"Hatswitch Y Axis\"\>", "0.`"},
+                    {"\<\"Button 1\"\>", "False"},
+                    {"\<\"Button 2\"\>", "False"},
+                    {"\<\"Button 3\"\>", "False"},
+                    {"\<\"Button 4\"\>", "False"},
+                    {"\<\"Button 5\"\>", "False"},
+                    {"\<\"Button 6\"\>", "False"},
+                    {"\<\"Button 7\"\>", "False"},
+                    {"\<\"Button 8\"\>", "False"}
+                    },
+                    AutoDelete->False,
+                    
+                    GridBoxAlignment->{
+                    "Columns" -> {Right, {Left}}, "ColumnsIndexed" -> {}, 
+                    "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+                    
+                    GridBoxItemSize->{
+                    "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}], 
+                    True->
+                    DynamicBox[ToBoxes[
+                    Grid[
+                    
+                    Transpose[{{
+                    "Y Axis", "X Axis", "Slider", "Z Rotation", 
+                    "Hatswitch X Axis", "Hatswitch Y Axis", "Button 1", 
+                    "Button 2", "Button 3", "Button 4", "Button 5", 
+                    "Button 6", "Button 7", "Button 8"}, 
+                    ControllerState[
+                    2, {"Y Axis", "X Axis", "Slider", "Z Rotation", 
+                    "Hatswitch X Axis", "Hatswitch Y Axis", "Button 1", 
+                    "Button 2", "Button 3", "Button 4", "Button 5", 
+                    "Button 6", "Button 7", "Button 8"}]}], 
+                    ColumnAlignments -> {Right, Left}, StripOnInput -> True], 
+                    StandardForm]]}, Dynamic[System`InfoDump`dynamic$$]]},
+                    {
+                    TemplateBox[{CheckboxBox[
+                    Dynamic[System`InfoDump`dynamic$$], ImageSize -> Small],
+                    "\" Show Dynamic Values\""},
+                    "RowDefault"]}
+                    },
+                    DefaultBaseStyle->"Column",
+                    GridBoxAlignment->{"Columns" -> {{Left}}},
+                    
+                    GridBoxItemSize->{
+                    "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+                    DynamicModuleValues:>{}]}
+                  },
+                  BaselinePosition->{Baseline, {1, 1}},
+                  DefaultBaseStyle->"Column",
+                  GridBoxAlignment->{"Columns" -> {{Left}}},
+                  
+                  GridBoxItemSize->{
+                   "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, 
+                    "Rows" -> {{1.}}, "RowsIndexed" -> {}}]}, Dynamic[
+                 System`InfoDump`open$$],
+                 BaselinePosition->Baseline,
+                 FrameMargins->0,
+                 ImageSize->Automatic],
+                DynamicModuleValues:>{}]}
+             },
+             AutoDelete->False,
+             GridBoxAlignment->{"Columns" -> {Right, Left}},
+             GridBoxDividers->{"Rows" -> {{False}, 
+                 GrayLevel[0, 0.2]}},
+             GridBoxItemSize->{"Columns" -> {14, 33.92307692307692}},
+             GridBoxSpacings->{"Columns" -> {
+                 Offset[0.28], {
+                  Offset[0.84]}, 
+                 Offset[0.28]}, "Rows" -> {
+                 Offset[0.2], {
+                  Offset[0.48]}, 
+                 Offset[0.2]}}]}
+          },
+          DefaultBaseStyle->"Column",
+          GridBoxAlignment->{"Columns" -> {{Left}}},
+          
+          GridBoxItemSize->{
+           "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}]}, Dynamic[
+         System`InfoDump`open$$],
+         ImageSize->Automatic],
+        DynamicModuleValues:>{}]}
+     },
+     DefaultBaseStyle->"Column",
+     GridBoxAlignment->{"Columns" -> {{Left}}},
+     GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}], 
+    "DialogStyle",
+    Editable->False,
+    Deletable->False,
+    StripOnInput->False,
+    ShowStringCharacters->False,
+    TooltipBoxOptions->{TooltipDelay->Automatic}],
+   DefaultBaseStyle->"DialogStyle",
+   FrameMargins->5],
+  ControllerInformationData[{
+   "Airplane Mode Switch" -> {{}, {"GenericDesktop:198 Button" -> False}, {
+      "Manufacturer ID" -> 16700, "Product Name" -> "Airplane Mode Switch", 
+       "Product ID" -> 43982, "Controller Type" -> "External Controller", 
+       "Device Type" -> "Windows DirectInput Device", "HID Usage Page" -> 
+       "GenericDesktop", "HID Usage" -> "GenericDesktop:12"}, {
+      "X2" -> "Z Axis", "Y2" -> -"Z Rotation", "JB" -> "Button 11", "JB1" -> 
+       "Button 11", "JB2" -> "Button 12", "JB3" -> None, "TLB" -> "Button 5", 
+       "TRB" -> "Button 6", "BLB" -> "Button 7", "BRB" -> "Button 8", "X" -> 
+       "X Axis", "Y" -> -"Y Axis", "Z" -> "Z Axis", "X1" -> "X Axis", 
+       "Y1" -> -"Y Axis", "Z1" -> "Z Axis", "X2" -> "Z Rotation", 
+       "Y2" -> -"Slider", "Z2" -> None, "X3" -> "Hatswitch X Axis", 
+       "Y3" -> -"Hatswitch Y Axis", "Z3" -> None, "X4" -> 
+       Switch[{"Button 1", "Button 3"}, {False, False}, 0, {
+         True, False}, -1, {False, True}, 1, {True, True}, 0.00001], "Y4" -> 
+       Switch[{"Button 2", "Button 4"}, {False, False}, 0, {
+         True, False}, -1, {False, True}, 1, {True, True}, 0.00001], "X5" -> 
+       Switch[{"Button 7", "Button 5"}, {False, False}, 0, {
+         True, False}, -1, {False, True}, 1, {True, True}, 0.00001], "Y5" -> 
+       Switch[{"Button 8", "Button 6"}, {False, False}, 0, {
+         True, False}, -1, {False, True}, 1, {True, True}, 0.00001], "X6" -> 
+       Switch[{"Button 9", "Button 10"}, {False, False}, 0, {
+         True, False}, -1, {False, True}, 1, {True, True}, 0.00001], "B1" -> 
+       "Button 1", "B2" -> "Button 2", "B3" -> "Button 3", "B4" -> "Button 4",
+        "B5" -> "Button 5", "B6" -> "Button 6", "B7" -> "Button 7", "B8" -> 
+       "Button 8", "B9" -> "Button 9", "B10" -> "Button 10", "B11" -> 
+       "Button 11", "B12" -> "Button 12", "DefaultAbsolute" -> False}}, 
+    "SideWinder Precision 2 Joystick" -> {{
+      "Y Axis" -> -0.000015259021896696368`, 
+       "X Axis" -> -0.000015259021896696368`, "Slider" -> -1., 
+       "Z Rotation" -> -0.000015259021896696368`, "Hatswitch X Axis" -> 0., 
+       "Hatswitch Y Axis" -> 0.}, {
+      "Button 1" -> False, "Button 2" -> False, "Button 3" -> False, 
+       "Button 4" -> False, "Button 5" -> False, "Button 6" -> False, 
+       "Button 7" -> False, "Button 8" -> False}, {
+      "Manufacturer ID" -> 1118, "Product Name" -> 
+       "SideWinder Precision 2 Joystick", "Product ID" -> 56, 
+       "Controller Type" -> "Joystick", "Device Type" -> 
+       "Windows DirectInput Device", "HID Usage Page" -> "GenericDesktop", 
+       "HID Usage" -> "Joystick"}, {
+      "X2" -> "Z Axis", "Y2" -> -"Z Rotation", "JB" -> "Button 11", "JB1" -> 
+       "Button 11", "JB2" -> "Button 12", "JB3" -> None, "TLB" -> "Button 5", 
+       "TRB" -> "Button 6", "BLB" -> "Button 7", "BRB" -> "Button 8", "X" -> 
+       "X Axis", "Y" -> -"Y Axis", "Z" -> "Z Axis", "X1" -> "X Axis", 
+       "Y1" -> -"Y Axis", "Z1" -> "Z Axis", "X2" -> "Z Rotation", 
+       "Y2" -> -"Slider", "Z2" -> None, "X3" -> "Hatswitch X Axis", 
+       "Y3" -> -"Hatswitch Y Axis", "Z3" -> None, "X4" -> 
+       Switch[{"Button 1", "Button 3"}, {False, False}, 0, {
+         True, False}, -1, {False, True}, 1, {True, True}, 0.00001], "Y4" -> 
+       Switch[{"Button 2", "Button 4"}, {False, False}, 0, {
+         True, False}, -1, {False, True}, 1, {True, True}, 0.00001], "X5" -> 
+       Switch[{"Button 7", "Button 5"}, {False, False}, 0, {
+         True, False}, -1, {False, True}, 1, {True, True}, 0.00001], "Y5" -> 
+       Switch[{"Button 8", "Button 6"}, {False, False}, 0, {
+         True, False}, -1, {False, True}, 1, {True, True}, 0.00001], "X6" -> 
+       Switch[{"Button 9", "Button 10"}, {False, False}, 0, {
+         True, False}, -1, {False, True}, 1, {True, True}, 0.00001], "B1" -> 
+       "Button 1", "B2" -> "Button 2", "B3" -> "Button 3", "B4" -> "Button 4",
+        "B5" -> "Button 5", "B6" -> "Button 6", "B7" -> "Button 7", "B8" -> 
+       "Button 8", "B9" -> "Button 9", "B10" -> "Button 10", "B11" -> 
+       "Button 11", "B12" -> "Button 12", "DefaultAbsolute" -> 
+       False}}}]]], "Output",
  CellChangeTimes->{
-  3.718735412174072*^9, 3.7187355225515594`*^9, 3.718735599549793*^9, 
-   3.718735686017228*^9, 3.7187358653431687`*^9, 3.718735897311531*^9, {
-   3.7187359466702747`*^9, 3.7187359550920715`*^9}, 3.718736133788949*^9, {
-   3.718736950210656*^9, 3.7187370055323653`*^9}, {3.7187370390436287`*^9, 
-   3.7187370658210697`*^9}, {3.7187371850905914`*^9, 3.718737207074293*^9}, {
-   3.7187373168842993`*^9, 3.718737327665164*^9}, 3.718737388462879*^9, {
-   3.7187374455236216`*^9, 3.7187374626128106`*^9}, {3.718737497315016*^9, 
-   3.7187375217364063`*^9}, 3.71873756120442*^9, {3.7187376450519953`*^9, 
-   3.7187376694421835`*^9}, {3.718737706720543*^9, 3.7187377303949924`*^9}, 
-   3.718737832623967*^9, {3.718737878623351*^9, 3.718737896732498*^9}, 
-   3.718903439464179*^9, 3.7189034838918657`*^9, 3.7189036416018515`*^9, {
-   3.718903779235863*^9, 3.7189038437810774`*^9}, 3.718903886506509*^9, {
-   3.7189039665302916`*^9, 3.7189039864512587`*^9}, 3.718996010184042*^9, 
-   3.718996116963708*^9, 3.7189961858152323`*^9, 3.7189962748621416`*^9, {
-   3.7189965243867693`*^9, 3.718996542104847*^9}, 3.718997163130086*^9, {
-   3.718997613431424*^9, 3.7189976586852217`*^9}, 3.7189977011731973`*^9, 
-   3.7189977896024475`*^9, {3.718998550721319*^9, 3.7189985794554725`*^9}, {
-   3.7189986610779486`*^9, 3.7189987112169657`*^9}, 3.7189987544031177`*^9, 
-   3.7189988289320583`*^9, 3.7189989831026955`*^9, 3.7189991647197437`*^9, 
-   3.7189993281769915`*^9, 3.7189999080125437`*^9, 3.7190001333481026`*^9, 
-   3.719000182886408*^9}],
+  3.7191147213612337`*^9, 3.719114757642485*^9, 3.719114904712561*^9, {
+   3.7191155104988737`*^9, 3.7191155507142816`*^9}, 3.7191155869839306`*^9, 
+   3.7191158067130675`*^9, 3.719116066336097*^9, 3.719116118154725*^9, 
+   3.719116460033317*^9, 3.719116501752071*^9, 3.7191168239947786`*^9, 
+   3.719116883947151*^9, 3.719117140019697*^9, 3.719117178958078*^9, {
+   3.7191173862291317`*^9, 3.719117431230365*^9}}],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1050,7 +1771,7 @@ Cell[BoxData[
                 Opacity[0.2]}, Devices`DeviceAPI`DeviceDump`status$$ = {
                "Connected (COM12)", "Not connected (COM12)"}, 
                Devices`DeviceAPI`DeviceDump`d$$ = DeviceObject[{"Serial", 1}],
-                Devices`DeviceAPI`DeviceDump`ind$$ = 1, 
+                Devices`DeviceAPI`DeviceDump`ind$$ = 2, 
                Devices`DeviceAPI`DeviceDump`indr$$ = 1}, 
                DynamicBox[ToBoxes[Devices`DeviceAPI`DeviceDump`ind$$ = If[
                     DeviceOpenQ[Devices`DeviceAPI`DeviceDump`d$$], 1, 2]; 
@@ -1067,7 +1788,7 @@ Cell[BoxData[
                    Part[
                    Devices`DeviceAPI`DeviceDump`opacities$$, 
                     Devices`DeviceAPI`DeviceDump`indr$$]], StandardForm],
-                ImageSizeCache->{145., {6., 11.}}],
+                ImageSizeCache->{169., {6., 11.}}],
                DynamicModuleValues:>{}],
               "SummaryItem"]}], "\[SpanFromLeft]"}
           },
@@ -1274,82 +1995,40 @@ Cell[BoxData[
   SelectWithContents->True,
   Selectable->False]], "Output",
  CellChangeTimes->{
-  3.718735412174072*^9, 3.7187355225515594`*^9, 3.718735599549793*^9, 
-   3.718735686017228*^9, 3.7187358653431687`*^9, 3.718735897311531*^9, {
-   3.7187359466702747`*^9, 3.7187359550920715`*^9}, 3.718736133788949*^9, {
-   3.718736950210656*^9, 3.7187370055323653`*^9}, {3.7187370390436287`*^9, 
-   3.7187370658210697`*^9}, {3.7187371850905914`*^9, 3.718737207074293*^9}, {
-   3.7187373168842993`*^9, 3.718737327665164*^9}, 3.718737388462879*^9, {
-   3.7187374455236216`*^9, 3.7187374626128106`*^9}, {3.718737497315016*^9, 
-   3.7187375217364063`*^9}, 3.71873756120442*^9, {3.7187376450519953`*^9, 
-   3.7187376694421835`*^9}, {3.718737706720543*^9, 3.7187377303949924`*^9}, 
-   3.718737832623967*^9, {3.718737878623351*^9, 3.718737896732498*^9}, 
-   3.718903439464179*^9, 3.7189034838918657`*^9, 3.7189036416018515`*^9, {
-   3.718903779235863*^9, 3.7189038437810774`*^9}, 3.718903886506509*^9, {
-   3.7189039665302916`*^9, 3.7189039864512587`*^9}, 3.718996010184042*^9, 
-   3.718996116963708*^9, 3.7189961858152323`*^9, 3.7189962748621416`*^9, {
-   3.7189965243867693`*^9, 3.718996542104847*^9}, 3.718997163130086*^9, {
-   3.718997613431424*^9, 3.7189976586852217`*^9}, 3.7189977011731973`*^9, 
-   3.7189977896024475`*^9, {3.718998550721319*^9, 3.7189985794554725`*^9}, {
-   3.7189986610779486`*^9, 3.7189987112169657`*^9}, 3.7189987544031177`*^9, 
-   3.7189988289320583`*^9, 3.7189989831026955`*^9, 3.7189991647197437`*^9, 
-   3.7189993281769915`*^9, 3.7189999080125437`*^9, 3.7190001333481026`*^9, 
-   3.719000183320409*^9}],
+  3.7191147213612337`*^9, 3.719114757642485*^9, 3.719114904712561*^9, {
+   3.7191155104988737`*^9, 3.7191155507142816`*^9}, 3.7191155869839306`*^9, 
+   3.7191158067130675`*^9, 3.719116066336097*^9, 3.719116118154725*^9, 
+   3.719116460033317*^9, 3.719116501752071*^9, 3.7191168239947786`*^9, 
+   3.719116883947151*^9, 3.719117140019697*^9, 3.719117178958078*^9, {
+   3.7191173862291317`*^9, 3.719117431261568*^9}}],
 
 Cell[BoxData[
  TagBox[
   StyleBox[
-   DynamicModuleBox[{$CellContext`h$$ = 13, $CellContext`x$$ = 
-    0, $CellContext`y$$ = 
-    0, $CellContext`\[Alpha]$$ = -0.04747295565424578, $CellContext`\[Beta]$$ \
-= 0.09564404300928928, $CellContext`\[Gamma]$$ = 0, Typeset`show$$ = True, 
-    Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
+   DynamicModuleBox[{$CellContext`x$$ = -0.4402827823649505, Typeset`show$$ = 
+    True, Typeset`bookmarkList$$ = {}, Typeset`bookmarkMode$$ = "Menu", 
     Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
     "\"untitled\"", Typeset`specs$$ = {{
-      Hold[$CellContext`\[Alpha]$$], (-20) Degree, 20 Degree}, {
-      Hold[$CellContext`\[Beta]$$], (-20) Degree, 20 Degree}, {
-      Hold[$CellContext`x$$], -2, 2}, {
-      Hold[$CellContext`y$$], -2, 2}, {
-      Hold[$CellContext`h$$], 11, 15}, {
-      Hold[$CellContext`\[Gamma]$$], (-30) Degree, 30 Degree}}, 
-    Typeset`size$$ = {542., {3., 10.}}, Typeset`update$$ = 0, 
-    Typeset`initDone$$, Typeset`skipInitDone$$ = 
-    True, $CellContext`\[Alpha]$256244$$ = 0, $CellContext`\[Beta]$256245$$ = 
-    0, $CellContext`x$256246$$ = 0, $CellContext`y$256247$$ = 
-    0, $CellContext`h$256248$$ = 0, $CellContext`\[Gamma]$256249$$ = 0}, 
+      Hold[$CellContext`x$$], -1, 1}}, Typeset`size$$ = {63., {2., 12.}}, 
+    Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = 
+    True, $CellContext`x$3543$$ = 0}, 
     DynamicBox[Manipulate`ManipulateBoxes[
-     1, StandardForm, 
-      "Variables" :> {$CellContext`h$$ = 
-        11, $CellContext`x$$ = -2, $CellContext`y$$ = -2, $CellContext`\
-\[Alpha]$$ = (-20) Degree, $CellContext`\[Beta]$$ = (-20) 
-         Degree, $CellContext`\[Gamma]$$ = (-30) Degree}, 
+     1, StandardForm, "Variables" :> {$CellContext`x$$ = -1}, 
       "ControllerVariables" :> {
-        Hold[$CellContext`\[Alpha]$$, $CellContext`\[Alpha]$256244$$, 0], 
-        Hold[$CellContext`\[Beta]$$, $CellContext`\[Beta]$256245$$, 0], 
-        Hold[$CellContext`x$$, $CellContext`x$256246$$, 0], 
-        Hold[$CellContext`y$$, $CellContext`y$256247$$, 0], 
-        Hold[$CellContext`h$$, $CellContext`h$256248$$, 0], 
-        Hold[$CellContext`\[Gamma]$$, $CellContext`\[Gamma]$256249$$, 0]}, 
+        Hold[$CellContext`x$$, $CellContext`x$3543$$, 0]}, 
       "OtherVariables" :> {
        Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
         Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
         Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
          Typeset`skipInitDone$$}, "Body" :> 
       DeviceWriteBuffer[$CellContext`serial, 
-        ToString[
-         Check[
-          
-          ReplaceAll[{$CellContext`x0, $CellContext`x1, $CellContext`x2, \
-$CellContext`x3, $CellContext`x4, $CellContext`x5}, 
-           $CellContext`calc[$CellContext`x$$, $CellContext`y$$, \
-$CellContext`\[Alpha]$$, $CellContext`\[Beta]$$, $CellContext`h$$, \
-$CellContext`\[Gamma]$$]], {}]]], 
-      "Specifications" :> {{$CellContext`\[Alpha]$$, (-20) Degree, 20 
-         Degree}, {$CellContext`\[Beta]$$, (-20) Degree, 20 
-         Degree}, {$CellContext`x$$, -2, 2}, {$CellContext`y$$, -2, 
-         2}, {$CellContext`h$$, 11, 15}, {$CellContext`\[Gamma]$$, (-30) 
-         Degree, 30 Degree}}, "Options" :> {}, "DefaultOptions" :> {}],
-     ImageSizeCache->{599., {222., 229.}},
+        ToString[{$CellContext`x$$, 0, 0, 0, 0}]], 
+      "Specifications" :> {{$CellContext`x$$, -1, 1}}, 
+      "Options" :> {
+       ControllerPath -> "Joystick", ControllerLinking -> All, 
+        AppearanceElements -> None, ControlType -> None, Paneled -> False, 
+        SynchronousUpdating -> True}, "DefaultOptions" :> {}],
+     ImageSizeCache->{87., {18., 25.}},
      SingleEvaluation->True],
     Deinitialization:>None,
     DynamicModuleValues:>{},
@@ -1361,125 +2040,19 @@ $CellContext`\[Gamma]$$]], {}]]],
    StripOnInput->False],
   Manipulate`InterpretManipulate[1]]], "Output",
  CellChangeTimes->{
-  3.718735412174072*^9, 3.7187355225515594`*^9, 3.718735599549793*^9, 
-   3.718735686017228*^9, 3.7187358653431687`*^9, 3.718735897311531*^9, {
-   3.7187359466702747`*^9, 3.7187359550920715`*^9}, 3.718736133788949*^9, {
-   3.718736950210656*^9, 3.7187370055323653`*^9}, {3.7187370390436287`*^9, 
-   3.7187370658210697`*^9}, {3.7187371850905914`*^9, 3.718737207074293*^9}, {
-   3.7187373168842993`*^9, 3.718737327665164*^9}, 3.718737388462879*^9, {
-   3.7187374455236216`*^9, 3.7187374626128106`*^9}, {3.718737497315016*^9, 
-   3.7187375217364063`*^9}, 3.71873756120442*^9, {3.7187376450519953`*^9, 
-   3.7187376694421835`*^9}, {3.718737706720543*^9, 3.7187377303949924`*^9}, 
-   3.718737832623967*^9, {3.718737878623351*^9, 3.718737896732498*^9}, 
-   3.718903439464179*^9, 3.7189034838918657`*^9, 3.7189036416018515`*^9, {
-   3.718903779235863*^9, 3.7189038437810774`*^9}, 3.718903886506509*^9, {
-   3.7189039665302916`*^9, 3.7189039864512587`*^9}, 3.718996010184042*^9, 
-   3.718996116963708*^9, 3.7189961858152323`*^9, 3.7189962748621416`*^9, {
-   3.7189965243867693`*^9, 3.718996542104847*^9}, 3.718997163130086*^9, {
-   3.718997613431424*^9, 3.7189976586852217`*^9}, 3.7189977011731973`*^9, 
-   3.7189977896024475`*^9, {3.718998550721319*^9, 3.7189985794554725`*^9}, {
-   3.7189986610779486`*^9, 3.7189987112169657`*^9}, 3.7189987544031177`*^9, 
-   3.7189988289320583`*^9, 3.7189989831026955`*^9, 3.7189991647197437`*^9, 
-   3.7189993281769915`*^9, 3.7189999080125437`*^9, 3.7190001333481026`*^9, 
-   3.719000183478411*^9}],
-
-Cell[BoxData[
- TemplateBox[{
-  "FindRoot","cvmit",
-   "\"Failed to converge to the requested accuracy or precision within \\!\\(\
-\\*RowBox[{\\\"100\\\"}]\\) iterations.\"",2,788,4474,29233412453335368781,
-   "Local"},
-  "MessageTemplate"]], "Message", "MSG",
- CellChangeTimes->{3.7190001923764114`*^9}],
-
-Cell[BoxData[
- TemplateBox[{
-  "FindRoot","cvmit",
-   "\"Failed to converge to the requested accuracy or precision within \\!\\(\
-\\*RowBox[{\\\"100\\\"}]\\) iterations.\"",2,788,4475,29233412453335368781,
-   "Local"},
-  "MessageTemplate"]], "Message", "MSG",
- CellChangeTimes->{3.71900019303341*^9}],
-
-Cell[BoxData[
- TemplateBox[{
-  "FindRoot","cvmit",
-   "\"Failed to converge to the requested accuracy or precision within \\!\\(\
-\\*RowBox[{\\\"100\\\"}]\\) iterations.\"",2,788,4476,29233412453335368781,
-   "Local"},
-  "MessageTemplate"]], "Message", "MSG",
- CellChangeTimes->{3.7190001935864096`*^9}],
-
-Cell[BoxData[
- TemplateBox[{
-  "FindRoot","cvmit",
-   "\"Failed to converge to the requested accuracy or precision within \\!\\(\
-\\*RowBox[{\\\"100\\\"}]\\) iterations.\"",2,788,4477,29233412453335368781,
-   "Local"},
-  "MessageTemplate"]], "Message", "MSG",
- CellChangeTimes->{3.719000194350444*^9}],
-
-Cell[BoxData[
- TemplateBox[{
-  "FindRoot","cvmit",
-   "\"Failed to converge to the requested accuracy or precision within \\!\\(\
-\\*RowBox[{\\\"100\\\"}]\\) iterations.\"",2,788,5894,29233412453335368781,
-   "Local"},
-  "MessageTemplate"]], "Message", "MSG",
- CellChangeTimes->{3.719000676067214*^9}],
-
-Cell[BoxData[
- TemplateBox[{
-  "FindRoot","cvmit",
-   "\"Failed to converge to the requested accuracy or precision within \\!\\(\
-\\*RowBox[{\\\"100\\\"}]\\) iterations.\"",2,788,5895,29233412453335368781,
-   "Local"},
-  "MessageTemplate"]], "Message", "MSG",
- CellChangeTimes->{3.7190006766472144`*^9}],
-
-Cell[BoxData[
- TemplateBox[{
-  "FindRoot","cvmit",
-   "\"Failed to converge to the requested accuracy or precision within \\!\\(\
-\\*RowBox[{\\\"100\\\"}]\\) iterations.\"",2,788,5896,29233412453335368781,
-   "Local"},
-  "MessageTemplate"]], "Message", "MSG",
- CellChangeTimes->{3.7190006810182104`*^9}],
-
-Cell[BoxData[
- TemplateBox[{
-  "FindRoot","cvmit",
-   "\"Failed to converge to the requested accuracy or precision within \\!\\(\
-\\*RowBox[{\\\"100\\\"}]\\) iterations.\"",2,788,6391,29233412453335368781,
-   "Local"},
-  "MessageTemplate"]], "Message", "MSG",
- CellChangeTimes->{3.719001940955925*^9}],
-
-Cell[BoxData[
- TemplateBox[{
-  "FindRoot","cvmit",
-   "\"Failed to converge to the requested accuracy or precision within \\!\\(\
-\\*RowBox[{\\\"100\\\"}]\\) iterations.\"",2,788,6392,29233412453335368781,
-   "Local"},
-  "MessageTemplate"]], "Message", "MSG",
- CellChangeTimes->{3.7190019454708576`*^9}],
-
-Cell[BoxData[
- TemplateBox[{
-  "FindRoot","cvmit",
-   "\"Failed to converge to the requested accuracy or precision within \\!\\(\
-\\*RowBox[{\\\"100\\\"}]\\) iterations.\"",2,788,6393,29233412453335368781,
-   "Local"},
-  "MessageTemplate"]], "Message", "MSG",
- CellChangeTimes->{3.719001948521839*^9}]
+  3.7191147213612337`*^9, 3.719114757642485*^9, 3.719114904712561*^9, {
+   3.7191155104988737`*^9, 3.7191155507142816`*^9}, 3.7191155869839306`*^9, 
+   3.7191158067130675`*^9, 3.719116066336097*^9, 3.719116118154725*^9, 
+   3.719116460033317*^9, 3.719116501752071*^9, 3.7191168239947786`*^9, 
+   3.719116883947151*^9, 3.719117140019697*^9, 3.719117178958078*^9, {
+   3.7191173862291317`*^9, 3.7191174312929845`*^9}}]
 }, Open  ]],
 
-Cell[BoxData[
- RowBox[{"DeviceClose", "[", "serial", "]"}]], "Input",
- CellChangeTimes->{{3.718734212962529*^9, 3.718734218774084*^9}}]
+Cell[BoxData["\[IndentingNewLine]"], "Input",
+ CellChangeTimes->{3.719111494393024*^9}]
 },
-WindowSize->{958, 988},
-WindowMargins->{{-7, Automatic}, {Automatic, 0}},
+WindowSize->{1916, 997},
+WindowMargins->{{Automatic, -4}, {Automatic, 0}},
 Magnification:>1.2 Inherited,
 FrontEndVersion->"11.0 for Microsoft Windows (64-bit) (July 28, 2016)",
 StyleDefinitions->"Default.nb"
@@ -1495,23 +2068,20 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
+Cell[558, 20, 39670, 1013, 2558, "Input"],
+Cell[40231, 1035, 128, 2, 37, "Input"],
+Cell[40362, 1039, 135, 2, 37, "Input"],
 Cell[CellGroupData[{
-Cell[580, 22, 31782, 816, 2534, "Input"],
-Cell[32365, 840, 5396, 95, 501, "Output"],
-Cell[37764, 937, 18503, 359, 88, "Output"],
-Cell[56270, 1298, 4839, 85, 504, "Output"],
-Cell[61112, 1385, 303, 7, 26, "Message"],
-Cell[61418, 1394, 300, 7, 26, "Message"],
-Cell[61721, 1403, 303, 7, 26, "Message"],
-Cell[62027, 1412, 301, 7, 26, "Message"],
-Cell[62331, 1421, 301, 7, 26, "Message"],
-Cell[62635, 1430, 303, 7, 26, "Message"],
-Cell[62941, 1439, 303, 7, 26, "Message"],
-Cell[63247, 1448, 301, 7, 26, "Message"],
-Cell[63551, 1457, 303, 7, 26, "Message"],
-Cell[63857, 1466, 301, 7, 26, "Message"]
+Cell[40522, 1045, 238, 5, 37, "Input"],
+Cell[40763, 1052, 238, 3, 566, "Output"]
 }, Open  ]],
-Cell[64173, 1476, 135, 2, 37, "Input"]
+Cell[CellGroupData[{
+Cell[41038, 1060, 2559, 63, 350, "Input"],
+Cell[43600, 1125, 25202, 531, 84, "Output"],
+Cell[68805, 1658, 17390, 344, 88, "Output"],
+Cell[86198, 2004, 2206, 43, 63, "Output"]
+}, Open  ]],
+Cell[88419, 2050, 87, 1, 62, "Input"]
 }
 ]
 *)
