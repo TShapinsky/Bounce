@@ -24,5 +24,5 @@ funcs = [getLen0, getLen1, getLen2, getLen3, getLen4, getLen5]
 def findAngles(x,y,ux,uy,uz):
   thetas = [0,0,0,0,0,0]
   for i in range(6):
-    thetas[i] = brenth(funcs[i], -pi/2, pi/2, disp = True, args =(x,y,ux,uy,uz))
+    thetas[i] = brenth(funcs[i], radians(-70), radians(70), disp = True, args =(x,y,ux,uy,uz))
   return thetas
