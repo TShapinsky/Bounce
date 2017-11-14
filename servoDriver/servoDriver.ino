@@ -2,8 +2,8 @@
 #include <math.h>
 #include <Servo.h>
 #define PINS {3,5,6,9,10,11}
-#define MINS {630,610,540,570,600,600}
-#define MAXS {2380,2400,2340,2360,2330,2330}
+#define MINS {620,850,810,820,540,800}
+#define MAXS {2080,2310,2270,2280,2000,2260}
 #define CROSS(a,b) {           \
   (a)[1]*(b)[2]-(a)[2]*(b)[1], \
   (a)[2]*(b)[0]-(a)[0]*(b)[2], \
