@@ -25,5 +25,4 @@ def findAngles(x,y,ux,uy,uz):
   thetas = [0,0,0,0,0,0]
   for i in range(6):
     thetas[i] = brenth(funcs[i], -pi/2, pi/2, disp = True, args =(x,y,ux,uy,uz))
-    
   return thetas
