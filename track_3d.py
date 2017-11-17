@@ -6,7 +6,9 @@ import time
 import serial
 import sys
 from findAngles import findAngles
+from findNormal import findNormal
 from ray import Ray
+from math import *
 
 def setup_serial(port="/dev/ttyUSB0",baud=115200):
     return serial.Serial(port,baud)
@@ -112,12 +114,12 @@ def predict_target(points):
             if len(roots) > 1:
                 distance = np.linalg.norm(root - root[-1])
                 if distance < 0.1:
-                    return root
+                    return root,vel
             roots.append(root)
             velocities.append(vel)
-        return roots[0]
+        return roots[0],velocities[0]
     else:
-        return points[0]
+        return points[0],[0,0,-10]
 
 def to_spherical_coordinates(x, y):
     focal_length = 4.0
@@ -156,6 +158,7 @@ for cam in cameras:
     cam.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT,360);
 if use_serial:
     ser = setup_serial()
+    ser2 = setup_serial(port = "/dev/ttyACM0")
 points = deque(maxlen=20)
 heights = [ int(cam.get(4)) for cam in cameras]
 widths  = [ int(cam.get(3)) for cam in cameras]
@@ -168,13 +171,13 @@ while True:
         frame = frames[i]
         height = heights[i]
         width = widths[i]
-        
+
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        
+
         mask = create_mask(hsv)
-        
+
         cnts = find_contours(mask)
-        
+
         cnts = filter_spherical_candidates(cnts)
 
         point = [width/2,height/2,0]
@@ -184,31 +187,47 @@ while True:
             point = [x,y,time.clock()]
 
         plot_contours(frame, cnts)
-            
+
         point[0] -= width/2
         point[1] -= height/2
         components[i] = point
         cv2.imshow("Frame" + str(i), frame)
         #cv2.imshow("Mask" + str(i), mask)
-        
+
     if components[0][2] != 0 and components[1][2] != 0 and abs(components[0][2] - components[1][2]) < 0.1:
         point = to_3d_point(components[0],components[1])
         points.appendleft([point[0],point[1],point[2],(components[0][2]+components[1][2])/2.0])
         target = []
+        vel = []
+        u = []
         if use_prediction:
-            target = predict_target(points)
-            print(target)
+            target,vel = predict_target(points)
+            try:
+                theta = -atan2(-target[1],target[0])
+                phi = radians(.5*linalg.norm(vel)*sqrt(target[1]**2 + target[2]**2))
+                u = [cos(theta)*sin(phi),sin(theta)*sin(phi),cos(phi)]
+                #u = findNormal(vel[0], -vel[1], vel[2], target[0], -target[1])
+            except:
+                u = [0, 0, 1]
+                print("could not compute target")
         else:
             target = point
+            vel = [0,0,-10]
+            theta = -atan2(-target[1],target[0])
+            phi = radians(.1*sqrt(target[1]**2 + target[2]**2))
+            u = [cos(theta)*sin(phi),sin(theta)*sin(phi),cos(phi)]
         try:
-            angles = findAngles(target[0],-target[1],0,0,1)
+
+            angles = findAngles(target[0],-target[1],u[0],u[1],u[2])
             angles = [angle*10000 for angle in angles]
             if(use_serial):
                 cmd_msg = "{%.2f,%.2f,%.2f,%.2f,%.2f,%.2f}" % (angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
-                #print(cmd_msg)
+                cmd_time = "{%d}" % int(1000000/np.linalg.norm(vel))
                 ser.write(cmd_msg)
-        except:
+                ser2.write(cmd_time)
+        except Exception as e:
             print("could not compute angles")
+            print(e)
             pass
     key = cv2.waitKey(1) & 0xFF
     if key == ord('q'):

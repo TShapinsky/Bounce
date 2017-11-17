@@ -39,8 +39,8 @@ def findNormal(vx, vy, vz, rx, ry):
   if(theta > 0):
     theta = theta%(2*pi)
 
-  print("phi =",degrees(phi))
-  print("theta=",degrees(theta))
+  #print("phi =",degrees(phi))
+  #print("theta=",degrees(theta))
   ux, uy, uz = cos(theta)*sin(phi), sin(theta)*sin(phi), cos(phi)
   return [ux, uy, uz]
 
