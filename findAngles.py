@@ -18,6 +18,12 @@ k = np.array([0,0,1,0])
 legLen = 12.0 + 5.0/8.0
 hornRad = 1
 
+mins =[620,2310,810,2280,540,2260]
+maxs =[2080,850,2270,820,2000,800]
+
+def rescale(a, minb, maxb, mina, maxa):
+ return (a-minb)/(maxb-minb)*(maxa-mina)+mina
+
 def buildModel(r, theta):
   phi = (2*pi - 3*theta)/3
   model = []
@@ -58,6 +64,7 @@ def findAngles(x,y,ux,uy,uz):
   topPos = getTop(x,y,12.43,ux,uy,uz)
   for i in range(6):
     thetas[i] = brenth(getLen, radians(-70), radians(70), disp = True, args =(i,topPos), xtol = 1e-3)
+    thetas[i] = int(round(rescale(thetas[i], radians(-70), radians(70), mins[i], maxs[i])))
   return thetas
 
 if __name__ == '__main__':
