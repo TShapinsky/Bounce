@@ -69,6 +69,13 @@ def generate_model(pts):
     else:
         return [float('nan')]
 
+def model_metrics(models):
+    errors = []
+    for model in models:
+        residuals = model[1][0]
+        errors.append(np.mean(np.square(residuals)))
+    return errors
+        
 def evaluate_model(model, t):
     res = 0
     for i in range(len(model)):
@@ -101,25 +108,18 @@ def find_velocity(model, t):
     return np.array([xdt,ydt,zdt])
 
 
-def predict_target(points):
+def predict_target(points, error_threshold = 0.1):
     if len(points) > 5:
-        roots = []
-        velocities = []
-        for i in range(len(points)-5):
-            temp_points = [points[j] for j in range(i,i+5)]
-            models = generate_model(temp_points)
-            time_root = np.max(find_roots(models[2][0],0))
-            root = evaluate_models(models,time_root)
-            vel = find_velocity(models, time_root)
-            if len(roots) > 1:
-                distance = np.linalg.norm(root - root[-1])
-                if distance < 0.1:
-                    return root,vel
-            roots.append(root)
-            velocities.append(vel)
-        return roots[0],velocities[0]
+        models = generate_model(points)
+        errors = model_metrics(models)
+        if np.max(errors) > error_threshold:
+            return points[0],[0,0,-10], time.clock() 
+        time_root = np.max(find_roots(models[2][0],0))
+        root = evaluate_models(models, time_root)
+        vel = find_velocity(models, time_root)
+        return root, vel, time_root
     else:
-        return points[0],[0,0,-10]
+        return points[0],[0,0,-10], time.clock()
 
 def to_spherical_coordinates(x, y):
     focal_length = 4.0
@@ -153,6 +153,7 @@ def write_csv(fp, data):
 use_serial = False
 use_prediction = False
 use_csv = False
+headless = False
 if len(sys.argv) > 0:
     for arg in sys.argv:
         if arg == "--serial":
@@ -161,6 +162,8 @@ if len(sys.argv) > 0:
             use_prediction = True
         if arg == "--csv":
             use_csv = True
+        if arg == "--headless":
+            headless = True
 cameras = get_capture_devices()
 
 for cam in cameras:
@@ -169,15 +172,25 @@ for cam in cameras:
 if use_serial:
     ser = setup_serial()
     ser2 = setup_serial(port = "/dev/ttyACM0")
-points = deque(maxlen=20)
+points = deque(maxlen=5)
 heights = [ int(cam.get(4)) for cam in cameras]
 widths  = [ int(cam.get(3)) for cam in cameras]
 components = [ (0,0) for cam in cameras ]
 if use_csv:
     fp = open('points.csv','w')
+
+next_ball = time.clock()
+    
 while True:
 
-    frames = [cam.read()[1] for cam in cameras]
+    if time.clock() < next_ball:
+        continue
+    
+    grab_time = time.clock()
+    for cam in cameras:
+        cam.grab()
+    
+    frames = [cam.retrieve()[1] for cam in cameras]
 
     for i in range(len(frames)):
         frame = frames[i]
@@ -196,15 +209,15 @@ while True:
         if len(cnts) > 0:
             ball_cnt = max(cnts, key=cv2.contourArea)
             ((x, y), radius) = cv2.minEnclosingCircle(ball_cnt)
-            point = [x,y,time.clock()]
-
-        plot_contours(frame, cnts)
+            point = [x,y,grab_time]
 
         point[0] -= width/2
         point[1] -= height/2
         components[i] = point
-        cv2.imshow("Frame" + str(i), frame)
-        #cv2.imshow("Mask" + str(i), mask)
+
+        if not headless:
+            plot_contours(frame, cnts)
+            cv2.imshow("Frame" + str(i), frame)
 
     if components[0][2] != 0 and components[1][2] != 0 and abs(components[0][2] - components[1][2]) < 0.1:
         point = to_3d_point(components[0],components[1])
@@ -215,15 +228,17 @@ while True:
         vel = []
         u = []
         if use_prediction:
-            target,vel = predict_target(points)
-            try:
-                theta = -atan2(-target[1],target[0])
-                phi = radians(.5*linalg.norm(vel)*sqrt(target[1]**2 + target[2]**2))
-                u = [cos(theta)*sin(phi),sin(theta)*sin(phi),cos(phi)]
-                #u = findNormal(vel[0], -vel[1], vel[2], target[0], -target[1])
-            except:
-                u = [0, 0, 1]
-                print("could not compute target")
+            if points[0][3] - points[-1][3] < .5:
+                target,vel,contact_time = predict_target(points)
+                next_ball = contact_time
+                try:
+                    theta = -atan2(-target[1],target[0])
+                    phi = radians(.5*linalg.norm(vel)*sqrt(target[1]**2 + target[2]**2))
+                    u = [cos(theta)*sin(phi),sin(theta)*sin(phi),cos(phi)]
+                    #u = findNormal(vel[0], -vel[1], vel[2], target[0], -target[1])
+                except:
+                    u = [0, 0, 1]
+                    print("could not compute target")
         else:
             target = point
             vel = [0,0,-10]
@@ -236,13 +251,16 @@ while True:
             angles = [angle*10000 for angle in angles]
             if(use_serial):
                 cmd_msg = "{%.2f,%.2f,%.2f,%.2f,%.2f,%.2f}" % (angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
+                cmd = bitstring.pack('HHHHHH',angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
                 cmd_time = "{%d}" % int(1000000/np.linalg.norm(vel))
-                ser.write(cmd_msg)
+                ser.write(cmd.tobytes())
                 ser2.write(cmd_time)
         except Exception as e:
             print("could not compute angles")
             print(e)
             pass
-    key = cv2.waitKey(1) & 0xFF
-    if key == ord('q'):
-        break
+    
+    if not headless:
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
+            break
