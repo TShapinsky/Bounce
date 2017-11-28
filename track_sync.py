@@ -5,6 +5,7 @@ from collections import deque
 import time
 import serial
 import sys
+import bitstring
 from findAngles import findAngles
 from findNormal import findNormal
 from ray import Ray
