@@ -1,3 +1,4 @@
 *.pyc
 cameras.dat
 *.bak
+__pycache__/*
