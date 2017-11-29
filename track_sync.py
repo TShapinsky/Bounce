@@ -5,6 +5,7 @@ from collections import deque
 import time
 import serial
 import sys
+import bitstring
 from findAngles import findAngles
 from findNormal import findNormal
 from ray import Ray
@@ -248,9 +249,9 @@ while True:
         try:
 
             angles = findAngles(target[0],-target[1],u[0],u[1],u[2])
-            angles = [angle*10000 for angle in angles]
+            #angles = [angle*10000 for angle in angles]
             if(use_serial):
-                cmd_msg = "{%.2f,%.2f,%.2f,%.2f,%.2f,%.2f}" % (angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
+                #cmd_msg = "{%.2f,%.2f,%.2f,%.2f,%.2f,%.2f}" % (angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
                 cmd = bitstring.pack('HHHHHH',angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
                 cmd_time = "{%d}" % int(1000000/np.linalg.norm(vel))
                 ser.write(cmd.tobytes())
