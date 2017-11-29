@@ -4,7 +4,7 @@ from scipy.optimize import broyden1
 from findAngles import findAngles
 from time import time
 
-p = 5.0/6.0
+p = 0.1
 s = 157.0
 g = 386.2
 def getFinalT(vx, vy, vz, phi, theta):

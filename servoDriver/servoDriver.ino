@@ -81,12 +81,9 @@ void setup() {
   pinMode(13,OUTPUT);
   Serial.begin(115200);
   inputString.reserve(200);
-  params[0] = 0;
-  params[1] = 0;
-  params[2] = 0;
-  params[3] = 0;
-  params[4] = 0;
-  params[5] = 0;
+  for(int i = 0; i<N_INPUTS; ++i) {
+    params[i] = (maxs[i] + mins[i])/2;
+  }
   newParams = true;
 }
 

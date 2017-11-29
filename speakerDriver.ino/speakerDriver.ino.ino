@@ -4,7 +4,8 @@
 #include "utility/Adafruit_MS_PWMServoDriver.h"
 
 #define POT_PIN A0
-#define SENSE_PIN 2
+#define SENSE_PIN A1
+#define THRESHHOLD 512
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *speaker = AFMS.getMotor(3);
@@ -22,14 +23,16 @@ void setup() {
 long waitTime = 0;
 
 void loop() {
-  while(digitalRead(SENSE_PIN) == LOW);
+  while(analogRead(SENSE_PIN) < THRESHHOLD);
+    waitTime = 0;
     long timeInit = micros();
-    long fireTime = timeInit + waitTime + (((long)analogRead(POT_PIN)) - 512) * 20;
+    long fireTime = timeInit + 6000;
     while (micros() < fireTime);
     speaker -> run(FORWARD);
     delay(100);
     speaker -> run(BACKWARD);
-  while(digitalRead(SENSE_PIN) == HIGH);
+    Serial.println(((long)analogRead(POT_PIN) * 30));
+  while(analogRead(SENSE_PIN) >= THRESHHOLD);
 }
 
 boolean inTransaction;
