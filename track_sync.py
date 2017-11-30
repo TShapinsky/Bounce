@@ -11,6 +11,9 @@ from findNormal import findNormal
 from ray import Ray
 from math import *
 
+magic_k = .10
+magic_exp = 2.5/2
+
 def setup_serial(port="/dev/ttyUSB0",baud=115200):
     return serial.Serial(port,baud)
 
@@ -181,7 +184,7 @@ if use_csv:
     fp = open('points.csv','w')
 
 next_ball = time.clock()
-    
+zero_time = time.clock()
 while True:
 
     if time.clock() < next_ball:
@@ -220,7 +223,12 @@ while True:
             plot_contours(frame, cnts)
             cv2.imshow("Frame" + str(i), frame)
 
-    if components[0][2] != 0 and components[1][2] != 0 and abs(components[0][2] - components[1][2]) < 0.1:
+    zero = False
+    if time.clock() - next_ball > 2 and time.clock() > zero_time:
+        print("zeroing")
+        zero = True
+        zero_time = time.clock() + 1
+    if (abs(components[0][2] - components[1][2]) < 0.1 and (components[0][2] != 0 and components[1][2] != 0)) or zero:
         point = to_3d_point(components[0],components[1])
         if use_csv:
             write_csv(fp, [point[0],point[1],point[2],(components[0][2]+components[1][2])/2.0])
@@ -228,40 +236,47 @@ while True:
         target = []
         vel = []
         u = []
-        if use_prediction:
+        if zero:
+            target = [0,0,0]
+            u = [0,0,1]
+            vel = [0,0,-10]
+        elif use_prediction:
             if points[0][3] - points[-1][3] < .5:
                 target,vel,contact_time = predict_target(points)
                 next_ball = contact_time
                 try:
-                    theta = -atan2(-target[1],target[0])
-                    phi = radians(.5*linalg.norm(vel)*sqrt(target[1]**2 + target[2]**2))
+                    u = findNormal(vel[0], -vel[1], vel[2], target[0], -target[1])
+                except Exception as err:
+                    print("failed to find u")
+                    theta = atan2(target[1],-target[0])
+                    phi = radians(magic_k*(target[0]**2 + target[1]**2)**magic_exp)
+                    print(phi)
                     u = [cos(theta)*sin(phi),sin(theta)*sin(phi),cos(phi)]
-                    #u = findNormal(vel[0], -vel[1], vel[2], target[0], -target[1])
-                except:
-                    u = [0, 0, 1]
-                    print("could not compute target")
+                    #u = [0, 0, 1]
         else:
             target = point
             vel = [0,0,-10]
-            theta = -atan2(-target[1],target[0])
-            phi = radians(.1*sqrt(target[1]**2 + target[2]**2))
+            theta = atan2(target[1],-target[0])
+            phi = radians(magic_k*(target[0]**2 + target[1]**2)**magic_exp)
+            print(phi)
             u = [cos(theta)*sin(phi),sin(theta)*sin(phi),cos(phi)]
         try:
-
+            #u = [0, 0, 1]
             angles = findAngles(target[0],-target[1],u[0],u[1],u[2])
             #angles = [angle*10000 for angle in angles]
             if(use_serial):
                 #cmd_msg = "{%.2f,%.2f,%.2f,%.2f,%.2f,%.2f}" % (angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
-                cmd = bitstring.pack('HHHHHH',angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
-                cmd_time = "{%d}" % int(1000000/np.linalg.norm(vel))
+                cmd = bitstring.pack('>hhhhhh',angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
+                cmd_time = "{%d}" % int(1.5/np.linalg.norm(vel)*1000000)
                 ser.write(cmd.tobytes())
                 ser2.write(cmd_time)
         except Exception as e:
-            print("could not compute angles")
-            print(e)
             pass
     
     if not headless:
         key = cv2.waitKey(1) & 0xFF
         if key == ord('q'):
             break
+        if key == ord('f'):
+            use_prediction = not use_prediction
+            print('predicting: ' + str(use_prediction))
