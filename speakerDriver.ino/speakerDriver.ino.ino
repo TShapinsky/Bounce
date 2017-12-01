@@ -21,17 +21,21 @@ void setup() {
 }
 
 long waitTime = 0;
+int prime = 0;
 
 void loop() {
+  //while(!prime);
+  speaker -> setSpeed(255);
+  speaker -> run(BACKWARD); 
   while(analogRead(SENSE_PIN) < THRESHHOLD);
-    waitTime = 0;
     long timeInit = micros();
-    long fireTime = timeInit + 6000;
+    long fireTime = timeInit + 6090;
     while (micros() < fireTime);
     speaker -> run(FORWARD);
     delay(100);
     speaker -> run(BACKWARD);
-    Serial.println(((long)analogRead(POT_PIN) * 30));
+    //Serial.println(((long)analogRead(POT_PIN) * 30));
+    //prime = 0;
   while(analogRead(SENSE_PIN) >= THRESHHOLD);
 }
 
@@ -50,6 +54,7 @@ void serialEvent() {
     }
     if (inChar == '}') {
       waitTime = inputString.substring(1).toInt();
+      //prime = 1;
     } else {
       inputString = inputString + inChar;
     }
