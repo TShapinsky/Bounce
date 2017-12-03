@@ -11,8 +11,8 @@ from findNormal import findNormal
 from ray import Ray
 from math import *
 
-magic_k = .10
-magic_exp = 2.5/2
+magic_k = .15
+magic_exp = 1.5
 
 def setup_serial(port="/dev/ttyUSB0",baud=115200):
     return serial.Serial(port,baud)
@@ -38,7 +38,7 @@ def filter_spherical_candidates(cnts, spherical_threshold=.5, radius_threshold=3
             filtered_cnts.append(cnt)
     return filtered_cnts
 
-def create_mask(hsv, lower=(10,.5*255,.2*255), upper=(35,1*255,.8*255), erode=2, dilate=2):
+def create_mask(hsv, lower=(10,.5*255,.2*255), upper=(40,1*255,1*255), erode=2, dilate=2):
     mask = cv2.inRange(hsv, lower, upper)
     mask = cv2.erode(mask, None, iterations=erode)
     mask = cv2.erode(mask, None, iterations=dilate)
@@ -71,6 +71,7 @@ def generate_model(pts):
     if len(xs) > 1:
         return [np.polyfit(ts,xs,2,full=True), np.polyfit(ts,ys,2,full=True), np.polyfit(ts,zs,2,full=True)]
     else:
+        print("no fit")
         return [float('nan')]
 
 def model_metrics(models):
@@ -113,17 +114,22 @@ def find_velocity(model, t):
 
 
 def predict_target(points, error_threshold = 0.1):
-    if len(points) > 5:
+    if len(points) >= 5:
         models = generate_model(points)
+        #print(models)
+        if models[0] == models[0]:
+            return points[0],[0,0,-150], time.clock() 
         errors = model_metrics(models)
-        if np.max(errors) > error_threshold:
-            return points[0],[0,0,-10], time.clock() 
+        #print('errors' + str(errors))
+        if np.max(errors) > error_threshold or models[2][0][0] > -200:
+            return points[0],[0,0,-150], time.clock() 
+        print(models[2][0])
         time_root = np.max(find_roots(models[2][0],0))
         root = evaluate_models(models, time_root)
         vel = find_velocity(models, time_root)
         return root, vel, time_root
     else:
-        return points[0],[0,0,-10], time.clock()
+        return points[0],[0,0,-150], time.clock()
 
 def to_spherical_coordinates(x, y):
     focal_length = 4.0
@@ -142,8 +148,8 @@ def to_3d_point(p1, p2):
 
     p1[0] += math.pi/6
     p2[0] += math.pi/6
-    ray1 = Ray([20.5,0,.75],[-1,math.tan(p1[1]),math.tan(p1[0])])
-    ray2 = Ray([0,20.5,.75],[math.tan(p2[1]),-1,math.tan(p2[0])])
+    ray1 = Ray([20,0,.75],[-1,math.tan(p1[1]),math.tan(p1[0])])
+    ray2 = Ray([0,20,.75],[math.tan(p2[1]),-1,math.tan(p2[0])])
     return ray1.find_closest_point(ray2)
 
 def write_csv(fp, data):
@@ -187,8 +193,8 @@ next_ball = time.clock()
 zero_time = time.clock()
 while True:
 
-    if time.clock() < next_ball:
-        continue
+    #if time.clock() < next_ball:
+    #    continue
     
     grab_time = time.clock()
     for cam in cameras:
@@ -222,13 +228,13 @@ while True:
         if not headless:
             plot_contours(frame, cnts)
             cv2.imshow("Frame" + str(i), frame)
+            #cv2.imshow("Mask" + str(i), mask)
 
     zero = False
     if time.clock() - next_ball > 2 and time.clock() > zero_time:
-        print("zeroing")
         zero = True
         zero_time = time.clock() + 1
-    if (abs(components[0][2] - components[1][2]) < 0.1 and (components[0][2] != 0 and components[1][2] != 0)) or zero:
+    if (components[0][2] != 0 and components[1][2] != 0) or zero:
         point = to_3d_point(components[0],components[1])
         if use_csv:
             write_csv(fp, [point[0],point[1],point[2],(components[0][2]+components[1][2])/2.0])
@@ -239,26 +245,34 @@ while True:
         if zero:
             target = [0,0,0]
             u = [0,0,1]
-            vel = [0,0,-10]
-        elif use_prediction:
-            if points[0][3] - points[-1][3] < .5:
-                target,vel,contact_time = predict_target(points)
-                next_ball = contact_time
-                try:
-                    u = findNormal(vel[0], -vel[1], vel[2], target[0], -target[1])
-                except Exception as err:
-                    print("failed to find u")
-                    theta = atan2(target[1],-target[0])
-                    phi = radians(magic_k*(target[0]**2 + target[1]**2)**magic_exp)
-                    print(phi)
-                    u = [cos(theta)*sin(phi),sin(theta)*sin(phi),cos(phi)]
-                    #u = [0, 0, 1]
+            vel = [0,0,-150]
+        if use_prediction:
+            #if points[0][3] - points[-1][3] < 1:
+            target,vel,contact_time = predict_target(points)
+            #target = points[0]
+            #if vel[2] != -10:
+                #print(vel[2])
+                #print('vel: ' + str(vel))
+            next_ball = contact_time
+            try:
+                u = findNormal(vel[0], -vel[1], vel[2], target[0], -target[1])
+                x = 1/0
+            except Exception as err:
+                #target[0] = -1
+                #target[1] = 1
+                #print("failed to find u")
+                theta = atan2(target[1],-target[0])
+                print(abs((-200 - vel[2])/200.0))
+                phi = radians(magic_k*(target[0]**2 + target[1]**2)**magic_exp)
+                #print(phi)
+                u = [cos(theta)*sin(phi),sin(theta)*sin(phi),cos(phi)]
+                #u = [0, 0, 1]
         else:
             target = point
-            vel = [0,0,-10]
+            vel = [0,0,-150]
             theta = atan2(target[1],-target[0])
             phi = radians(magic_k*(target[0]**2 + target[1]**2)**magic_exp)
-            print(phi)
+            #print(phi)
             u = [cos(theta)*sin(phi),sin(theta)*sin(phi),cos(phi)]
         try:
             #u = [0, 0, 1]
@@ -267,9 +281,11 @@ while True:
             if(use_serial):
                 #cmd_msg = "{%.2f,%.2f,%.2f,%.2f,%.2f,%.2f}" % (angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
                 cmd = bitstring.pack('>hhhhhh',angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
-                cmd_time = "{%d}" % int(1.5/np.linalg.norm(vel)*1000000)
+                if vel[2] != -150:
+                    #vel -= 50
+                    cmd_time = "{%d}" % int(1.5/np.linalg.norm(vel)*1000000)
+                    ser2.write(cmd_time)
                 ser.write(cmd.tobytes())
-                ser2.write(cmd_time)
         except Exception as e:
             pass
     

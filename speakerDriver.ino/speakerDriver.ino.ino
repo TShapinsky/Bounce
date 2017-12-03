@@ -29,7 +29,8 @@ void loop() {
   speaker -> run(BACKWARD); 
   while(analogRead(SENSE_PIN) < THRESHHOLD);
     long timeInit = micros();
-    long fireTime = timeInit + 6090;
+    //long fireTime = timeInit + 6090;
+    long fireTime = timeInit + waitTime + map(analogRead(POT_PIN),0,1024,-500,500);
     while (micros() < fireTime);
     speaker -> run(FORWARD);
     delay(100);
