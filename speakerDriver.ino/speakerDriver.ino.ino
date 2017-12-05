@@ -35,11 +35,11 @@ void loop() {
   long timeInit = micros();
   long lag = analogRead(POT_PIN)*4;
   if(lastHit == -1 || (timeInit-lastHit)>2000000) {
-    waitTime = 6970+lag;
+    waitTime = 6970-lag;
   } else {
     waitTime = 3/(9.81*(timeInit-lastHit));
   }
-  long fireTime = timeInit + waitTime - lag;
+  long fireTime = timeInit + waitTime + lag;
   lastHit = timeInit + waitTime;
   while (micros() < fireTime);
   speaker -> run(FORWARD);

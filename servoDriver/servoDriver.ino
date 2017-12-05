@@ -1,8 +1,8 @@
 #include <math.h>
 #include <Servo.h>
 #define PINS {3,5,6,9,10,11}
-#define MINS {620,850,810,820,540,800}
-#define MAXS {2080,2310,2270,2280,2000,2260}
+#define MINS {540,570,590,600,530,630}
+#define MAXS {2290,2320,2340,2350,2280,2380}
 #define N_INPUTS 6
 #define N_DELIMS (N_INPUTS-1)
 #define READ_THETAS 1
@@ -37,9 +37,9 @@ void moveToAngle(int servo, uint16_t angle) {
 #else
 void moveToAngle(int servo, float angle) {
   if(servo%2==0) {
-    servos[servo].writeMicroseconds(remap(angle,RADIANS(-70),RADIANS(70),mins[servo],maxs[servo]));
+    servos[servo].writeMicroseconds(remap(angle,RADIANS(-61),RADIANS(90),mins[servo],maxs[servo]));
   } else {
-    servos[servo].writeMicroseconds(remap(angle,RADIANS(-70),RADIANS(70),maxs[servo],mins[servo]));
+    servos[servo].writeMicroseconds(remap(angle,RADIANS(-61),RADIANS(90),maxs[servo],mins[servo]));
   }
 }
 #endif
