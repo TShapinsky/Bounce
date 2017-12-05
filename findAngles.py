@@ -16,7 +16,7 @@ rT     = 3.46;
 k = np.array([0,0,1,0])
 
 legLen = 12.0 + 5.0/8.0
-hornRad = 1
+hornRad = 2
 
 mins =[620,2310,810,2280,540,2260]
 maxs =[2080,850,2270,820,2000,800]
@@ -63,7 +63,7 @@ def findAngles(x,y,ux,uy,uz):
   thetas = [0,0,0,0,0,0]
   topPos = getTop(x,y,12.43,ux,uy,uz)
   for i in range(6):
-    thetas[i] = brenth(getLen, radians(-70), radians(70), disp = True, args =(i,topPos), xtol = 1e-3)
+    thetas[i] = brenth(getLen, radians(-70), radians(70), disp = True, args =(i,topPos), xtol = 1e-4, maxiter = 20)
     thetas[i] = int(round(rescale(thetas[i], radians(-70), radians(70), mins[i], maxs[i])))
   return thetas
 

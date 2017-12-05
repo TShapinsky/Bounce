@@ -14,7 +14,7 @@ String inputString;
 
 void setup() {
   AFMS.begin();
-  Serial.begin(115200);
+  //Serial.begin(115200);
   speaker -> setSpeed(255);
   speaker -> run(BACKWARD);
   inputString.reserve(200);
@@ -22,23 +22,31 @@ void setup() {
 
 long waitTime = 0;
 int prime = 0;
+long lastHit = -1;
+
+void busyDelay(long waitInMillis) {
+  long timeInit = millis();
+  long fireTime = timeInit + waitInMillis;
+  while(millis() < fireTime);
+}
 
 void loop() {
-  //while(!prime);
-  speaker -> setSpeed(255);
-  speaker -> run(BACKWARD); 
-  while(analogRead(SENSE_PIN) < THRESHHOLD);
-    long timeInit = micros();
-    //long fireTime = timeInit + 6090;
-    long fireTime = timeInit + waitTime + map(analogRead(POT_PIN),0,1024,-500,500);
-    while (micros() < fireTime);
-    speaker -> run(FORWARD);
-    delay(100);
-    speaker -> run(BACKWARD);
-    //Serial.println(((long)analogRead(POT_PIN) * 30));
-    //prime = 0;
-  while(analogRead(SENSE_PIN) >= THRESHHOLD);
-}
+  while(analogRead(SENSE_PIN)<THRESHHOLD);
+  long timeInit = micros();
+  long lag = analogRead(POT_PIN)*4;
+  if(lastHit == -1 || (timeInit-lastHit)>2000000) {
+    waitTime = 6970+lag;
+  } else {
+    waitTime = 3/(9.81*(timeInit-lastHit));
+  }
+  long fireTime = timeInit + waitTime - lag;
+  while (micros() < fireTime);
+  speaker -> run(FORWARD);
+  Serial.begin(115200);
+  busyDelay(100);
+  speaker -> run(BACKWARD);
+  busyDelay(150);
+ }
 
 boolean inTransaction;
 void serialEvent() {
