@@ -40,6 +40,7 @@ void loop() {
     waitTime = 3/(9.81*(timeInit-lastHit));
   }
   long fireTime = timeInit + waitTime - lag;
+  lastHit = timeInit + waitTime;
   while (micros() < fireTime);
   speaker -> run(FORWARD);
   Serial.begin(115200);
