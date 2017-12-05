@@ -1,24 +1,39 @@
 #include <math.h>
 #include <Wire.h>
-#include <Adafruit_MotorShield.h>
-#include "utility/Adafruit_MS_PWMServoDriver.h"
 
 #define POT_PIN A0
-#define SENSE_PIN A1
+#define SENSE_PIN A2
+#define SPK_F 2
+#define SPK_B 3
 #define THRESHHOLD 512
-
-Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *speaker = AFMS.getMotor(3);
+#define FORWARD 1
+#define BACKWARD 0
+#define NEUTRAL 2
 
 String inputString;
+void driveSpeaker(int direction);
 
 void setup() {
-  AFMS.begin();
   //Serial.begin(115200);
-  speaker -> setSpeed(255);
-  speaker -> run(BACKWARD);
+  pinMode(SPK_F, OUTPUT);
+  pinMode(SPK_B, OUTPUT);
+  driveSpeaker(NEUTRAL);
   inputString.reserve(200);
 }
+
+void driveSpeaker(int direction){
+  if(direction == FORWARD){
+    digitalWrite(SPK_F, HIGH);
+    digitalWrite(SPK_B, LOW);
+  }else if(direction == BACKWARD){
+    digitalWrite(SPK_F, LOW);
+    digitalWrite(SPK_B, HIGH);
+  }else{
+    digitalWrite(SPK_F, LOW);
+    digitalWrite(SPK_B, LOW);
+  }
+}
+
 
 long waitTime = 0;
 int prime = 0;
@@ -42,10 +57,9 @@ void loop() {
   long fireTime = timeInit + waitTime + lag;
   lastHit = timeInit + waitTime;
   while (micros() < fireTime);
-  speaker -> run(FORWARD);
-  Serial.begin(115200);
+  driveSpeaker(FORWARD);
   busyDelay(100);
-  speaker -> run(BACKWARD);
+  driveSpeaker(BACKWARD);
   busyDelay(150);
  }
 
