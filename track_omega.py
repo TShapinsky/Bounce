@@ -201,25 +201,35 @@ def predict_target(points, error_threshold = 0.5):
     else:
         raise NoTargetException()
 
+c2toGlobal = np.array([[-0.0332672, 0.999309, 0.0165482, -0.359602], [0.527225, 0.0316128, -0.849138, 21.4792], [0.849074, 0.0195238, 0.527912, 0.202069], [0., 0., 0., 1.]])
+c1toGlobal = np.array([[0.503989, -0.0161625, -0.863559, 21.4524], [-0.000933221, -0.999835, 0.0181684, 0.455284], [0.863709, 0.00835079, 0.503921, 0.28675], [0., 0., 0., 1.]])
+fx = 736.82026776
+fy = 735.59843396
+cx = 320.38304561
+cy = 171.57594123
+
+c1Pos = c1toGlobal.dot([0,0,0,1])[0:3]
+c2Pos = c2toGlobal.dot([0,0,0,1])[0:3]
+
+mtx = np.array([[ 736.82026776  ,  0.        ,  320.38304561],
+                [   0.        ,  735.59843396,  171.57594123],
+                [   0.        ,    0.        ,    1.        ]])
+dist = np.array([[ 0.0456937   ,0.85564883, -0.00454031  ,0.01840192 ,-2.39214515]])
+
 def to_spherical_coordinates(x, y):
-    focal_length = 4.0
-    fov = 60.0/180.0*math.pi
-    res = 640.0
-    px_mm = 2.0*focal_length*math.tan(fov/2)/res
-    y_mm = y*px_mm
-    x_mm = x*px_mm
-    y_rad = math.atan(y_mm/focal_length)
-    x_rad = math.atan(x_mm/focal_length)
+    y_rad = math.atan((x-cx)/fx)
+    x_rad = math.atan((y-cy)/fy)
     return [x_rad,y_rad]
 
 def to_3d_point(p1, p2):
-    p1 = to_spherical_coordinates(p1[0],p1[1])
-    p2 = to_spherical_coordinates(p2[0],p2[1])
-
-    p1[0] += math.pi/6
-    p2[0] += math.pi/6
-    ray1 = Ray([20,0,.75],[-1,math.tan(p1[1]),math.tan(p1[0])])
-    ray2 = Ray([0,20,.75],[math.tan(p2[1]),-1,math.tan(p2[0])])
+    x1 = p1[0]
+    y1 = p1[1]
+    x2 = p2[0]
+    y2 = p2[1]
+    u1 = c1toGlobal.dot([(x1-cx)/fx, (y1-cy)/fy, 1, 0])[0:3]
+    u2 = c2toGlobal.dot([(x2-cx)/fx, (y2-cy)/fy, 1, 0])[0:3]
+    ray1 = Ray(c1Pos,u1)
+    ray2 = Ray(c2Pos,u2)
     return ray1.find_closest_point(ray2)
 
 def write_csv(fp, data):
@@ -251,10 +261,26 @@ for cam in cameras:
     cam.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT,360)
 if use_serial:
     ser = setup_serial()
-    ser2 = setup_serial(port = "/dev/ttyACM0")
+    #time.sleep(2)
+    #angles = findAngles(2,2,0,0,1)
+    #cmd = bitstring.pack('>hhhhhh',angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
+    #ser.write(cmd.tobytes())
+
 points = deque(maxlen=nPoints)
 heights = [ int(cam.get(4)) for cam in cameras]
 widths  = [ int(cam.get(3)) for cam in cameras]
+
+h, w = (360,640)
+newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
+
+#fx = newcameramtx[0][0]
+#fy = newcameramtx[1][1]
+#cx = newcameramtx[0][2]
+#cy = newcameramtx[1][2]
+
+calibX = 0
+calibY = 0
+
 components = [ (0,0) for cam in cameras ]
 if use_csv:
     fp = open('points.csv','w')
@@ -274,6 +300,7 @@ while True:
 
     for i in range(len(frames)):
         frame = frames[i]
+        frame = cv2.undistort(frame, mtx, dist, None, newcameramtx)
         height = heights[i]
         width = widths[i]
 
@@ -291,8 +318,6 @@ while True:
             ((x, y), radius) = cv2.minEnclosingCircle(ball_cnt)
             point = [x,y,grab_time]
 
-        point[0] -= width/2
-        point[1] -= height/2
         components[i] = point
 
         if not headless:
@@ -318,42 +343,47 @@ while True:
             target = [0,0,0]
             u = [0,0,1]
             vel = [0,0,0]
-        else:
+        elif use_prediction:
             try:
-                target,vel,next_ball=predict_target(points)
-                x = target[0]
-                y = -target[1]
-                vx = vel[0]
-                vy = -vel[1]
-                u = np.array([-x*kp-vx*kv, -y*kp-vy*kv, uz])
+                pass
+                #target,vel,next_ball=predict_target(points)
+                #x = target[0]
+                #y = target[1]
+                #vx = vel[0]
+                #vy = -vel[1]
+                #u = np.array([-x*kp-vx*kv, -y*kp-vy*kv, uz])
             except NoTargetException as e:
                 continue
                 #next_ball = time.clock()
                 #target = point
                 #vel = [0,0,-130]
                 #x = target[0]
-                #y = -target[1]
+                #y = target[1]
                 #theta = atan2(y,x)np.sub(current_pos,)
                 #phi = -magic_k*(x**2+y**2)**magic_exp
                 #u = [cos(theta)*sin(phi), sin(theta)*sin(phi), cos(phi)]
+        else:
+            pass
+            #if(point[2] < 3):
+            #    continue
+            #target = [point[0],point[1]]
+            target = [calibX,calibY];
+            u = [0, 0, 1]
+            next_ball = time.clock();
+
         try:
-            angles = findAngles(target[0],-target[1],u[0],u[1],u[2])
+            angles = findAngles(target[0],target[1],u[0],u[1],u[2])
         except (ValueError, RuntimeError) as e:
             continue
 
-        distToTarget = sqrt((current_pos[0]-target[0])**2 + (current_pos[1]+target[1])**2)
+        distToTarget = sqrt((current_pos[0]-target[0])**2 + (current_pos[1]-target[1])**2)
 
         if(use_serial):
             #cmd_msg = "{%.2f,%.2f,%.2f,%.2f,%.2f,%.2f}" % (angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
-            if vel[2] != 0:
-                vu = vel.dot(u)/np.linalg.norm(u)
-                cmd_time = "{%d}" % max(int(1.5/abs(vu)*1000000)-7000,0)
-                print(cmd_time)
-                ser2.write(cmd_time)
             if(True):
                 cmd = bitstring.pack('>hhhhhh',angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
                 ser.write(cmd.tobytes())
-                current_pos = np.array([target[0],-target[1]])
+                current_pos = np.array([target[0],target[1]])
 
     if not headless:
         key = cv2.waitKey(1) & 0xFF
@@ -362,3 +392,13 @@ while True:
         if key == ord('f'):
             use_prediction = not use_prediction
             print('predicting: ' + str(use_prediction))
+        if(key == ord('left')):
+            calibX -= .5
+        if(key == ord('right')):
+            calibX += .5
+        if(key == ord('up')):
+            calibY += .5
+        if(key == ord('down')):
+            calibY -= .5
+        if(ley == ord('space')):
+            print("{%d,%d,%f,%f}" % (calibX,calibY,point[0],point[1]))

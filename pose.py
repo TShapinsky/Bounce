@@ -44,7 +44,7 @@ while True:
         ret,rvecs, tvecs, inliers = cv2.solvePnP(objp, corners, mtx, dist)
         # project 3D points to image plane
         imgpts, jac = cv2.projectPoints(axis, rvecs, tvecs, mtx, dist)
-        img = draw(img,corners2,imgpts)
+        img = draw(img,corners,imgpts)
         cv2.imshow('img',img)
         k = cv2.waitKey(0) & 0xFF
         if k == ord('s'):
