@@ -54,7 +54,7 @@ void loop() {
   } else {
     waitTime = 3/(9.81*(timeInit-lastHit));
   }
-  long fireTime = timeInit + waitTime + lag;
+  long fireTime = timeInit;// + waitTime + lag;
   lastHit = timeInit + waitTime;
   while (micros() < fireTime);
   driveSpeaker(FORWARD);
