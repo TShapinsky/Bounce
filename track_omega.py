@@ -11,9 +11,9 @@ from findNormal import findNormal
 from ray import Ray
 from math import *
 
-kp = 1.25
+kp = 0.3
 kv = 1
-uz = 110
+uz = 90
 magic_exp = 1#/2
 current_pos = np.array([0, 0]);
 threshhold = 0.1
@@ -206,18 +206,6 @@ def predict_target(points, error_threshold = 10000):
         print("way too few points")
         raise NoTargetException()
 
-"""c1toGlobal = np.array([[-0.588756, -0.012549, 0.808213, -22.23],
-                       [0.0229537, -0.999736, 0.00119828, -0.157322],
-                       [0.807985, 0.0192569, 0.588889, -0.132929],
-                       [0., 0., 0., 1.]])
-c2toGlobal = np.array([[0.0101734, 0.999808, -0.016767, -0.253804], [-0.540928, 0.0196052,
-  0.84084, -22.23], [0.841007, 0.000515537, 0.541023, 0.617071], [0.,
-  0., 0., 1.]])
-fx = 764.221#750.89501953125
-fy = 749.038#735.374755859375
-cx = 378.153#326.98767770128325
-cy = 175.969#170.60347574188199"""
-
 c1toGlobal = np.array([[-0.546532, -0.00232285, 0.837435, -20.8501],
               [0.0233164, -0.999651, 0.0124441, -0.128546],
               [0.837113, 0.0263271, 0.546396, 0.838027],
@@ -383,11 +371,10 @@ while True:
                 #phi = -magic_k*(x**2+y**2)**magic_exp
                 u = np.array([-x*kp, -y*kp, uz])
         else:
-            pass
             #if(point[2] < 3):
             #    continue
             target = [point[0],point[1]]
-            if(last_point[3]!=0):
+            if(last_point[3]!=0 and last_point[3]!=point[3]):
                 vel = np.subtract(point,last_point)/(point[3]-last_point[3])
             else:
                 last_point = point
@@ -398,7 +385,7 @@ while True:
             vx = vel[0]
             vy = vel[1]
             #target = [calibX,calibY];
-            u = np.array([-x*kp-vx*kv, -y*kp-vy*kv, uz])
+            u = np.array([-np.sign(x)*x**2*kp-vx*kv, -np.sign(y)*y**2*kp-vy*kv, uz])
 
         try:
             angles = findAngles(target[0],target[1],u[0],u[1],u[2])
