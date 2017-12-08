@@ -6,6 +6,7 @@
 #define SPK_F 2
 #define SPK_B 3
 #define THRESHHOLD 512
+#define WAKE_PIN A5
 #define FORWARD 1
 #define BACKWARD 0
 #define NEUTRAL 2
@@ -17,6 +18,7 @@ void setup() {
   //Serial.begin(115200);
   pinMode(SPK_F, OUTPUT);
   pinMode(SPK_B, OUTPUT);
+  pinMode(WAKE_PIN, INPUT);
   driveSpeaker(NEUTRAL);
   inputString.reserve(200);
 }
@@ -46,8 +48,14 @@ void busyDelay(long waitInMillis) {
 }
 
 void loop() {
-  while(analogRead(SENSE_PIN)<THRESHHOLD);
-  long timeInit = micros();
+  while(analogRead(SENSE_PIN)<THRESHHOLD) {
+    if(analogRead(WAKE_PIN) <THRESHHOLD) {
+      driveSpeaker(NEUTRAL);
+    } else {
+      driveSpeaker(BACKWARD);
+    }
+  }
+  /*long timeInit = micros();
   long lag = analogRead(POT_PIN)*4;
   if(lastHit == -1 || (timeInit-lastHit)>2000000) {
     waitTime = 6970-lag;
@@ -55,8 +63,8 @@ void loop() {
     waitTime = 3/(9.81*(timeInit-lastHit));
   }
   long fireTime = timeInit;// + waitTime + lag;
-  lastHit = timeInit + waitTime;
-  while (micros() < fireTime);
+  lastHit = timeInit + waitTime;*/
+  //while (micros() < fireTime);
   driveSpeaker(FORWARD);
   busyDelay(100);
   driveSpeaker(BACKWARD);

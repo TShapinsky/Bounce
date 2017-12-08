@@ -3,6 +3,7 @@
 #define PINS {3,5,6,9,10,11}
 #define MINS {540,570,590,600,530,630}
 #define MAXS {2290,2320,2340,2350,2280,2380}
+#define WAKE_PIN 12
 #define N_INPUTS 6
 #define N_DELIMS (N_INPUTS-1)
 #define READ_THETAS 1
@@ -79,6 +80,7 @@ void setup() {
   }
   startTime = millis();
   pinMode(13,OUTPUT);
+  pinMode(WAKE_PIN,OUTPUT);
   Serial.begin(115200);
   inputString.reserve(200);
   for(int i = 0; i<N_INPUTS; ++i) {
@@ -86,9 +88,11 @@ void setup() {
   }
   newParams = true;
 }
-
+long paramTime;
 void loop() {
   if(newParams) {
+      digitalWrite(WAKE_PIN, HIGH);
+      paramTime = millis();
       #if READ_THETAS
         for(int i = 0; i<6; ++i) {
           thetas[i] = params[i];
@@ -103,6 +107,8 @@ void loop() {
         }
       #endif
       newParams = false;
+  } else if(millis()-paramTime > 1000) {
+    digitalWrite(WAKE_PIN, LOW);
   }
 }
 
@@ -122,8 +128,12 @@ void serialEvent() {
         currentByte++;
       }else{
         params[currentParam] |= inByte;
-        currentParam++;
         currentByte = 0;
+        if(params[currentParam] == 0xFFFF) {
+          currentParam = 0;
+          continue;
+        }
+        currentParam++;
         if(currentParam == N_INPUTS) {
           newParams = true;
           currentParam = 0;
