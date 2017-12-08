@@ -11,9 +11,9 @@ from findNormal import findNormal
 from ray import Ray
 from math import *
 
-kp = 1
+kp = 1.25
 kv = 1
-uz = 100
+uz = 150
 magic_exp = 1#/2
 current_pos = np.array([0, 0]);
 threshhold = 0.1
@@ -125,14 +125,16 @@ def generate_model(pts):
             zs.append(pt[2])
             ts.append(pt[3]-t0)
 
-    if np.max(ts) - np.min(ts) > 2.0*nPoints/30:
-        "Points to far appart"
+    if np.max(ts) - np.min(ts) > 1:
+        print("Points to far appart")
+        print(np.max(ts) - np.min(ts))
+        print(2.0*nPoints/30)
         raise NoTargetException()
 
     if len(xs) > 2:
         return [np.polyfit(ts,xs,1,full=True), np.polyfit(ts,ys,1,full=True), np.polyfit(ts,zs,2,full=True)]
     else:
-        "Not enough points"
+        print("Not enough points")
         raise NoTargetException()
 
 def model_metrics(models):
@@ -163,9 +165,11 @@ def find_roots(model, y0):
     b = model[1]
     c = model[2] - y0
     g = abs(2*a/39.3701)
-    if abs(g-9.81)>1.5:
+    if abs(g-9.81)>4:
+        print("g = ", g)
         raise NoTargetException()
     if(b*b - 4*a*c < 0):
+        print("gravity is backwards")
         raise NoTargetException()
     d = np.sqrt(b*b - 4*a*c)
     roots = [(-b + d)/(2*a),(-b - d)/(2*a)]
@@ -186,7 +190,7 @@ def find_velocity(model, t):
     return np.array([xdt,ydt,zdt])
 
 
-def predict_target(points, error_threshold = 0.5):
+def predict_target(points, error_threshold = 10000):
     if len(points) >= nPoints:
         t0 = points[-1][3]
         models = generate_model(points)
@@ -199,14 +203,19 @@ def predict_target(points, error_threshold = 0.5):
         vel = find_velocity(models, time_root)
         return root, vel, time_root+t0
     else:
+        print("way too few points")
         raise NoTargetException()
 
-c2toGlobal = np.array([[-0.0332672, 0.999309, 0.0165482, -0.359602], [0.527225, 0.0316128, -0.849138, 21.4792], [0.849074, 0.0195238, 0.527912, 0.202069], [0., 0., 0., 1.]])
-c1toGlobal = np.array([[0.503989, -0.0161625, -0.863559, 21.4524], [-0.000933221, -0.999835, 0.0181684, 0.455284], [0.863709, 0.00835079, 0.503921, 0.28675], [0., 0., 0., 1.]])
-fx = 736.82026776
-fy = 735.59843396
-cx = 320.38304561
-cy = 171.57594123
+c1toGlobal = np.array([[-0.588756, -0.012549, 0.808213, -22.23], [0.0229537, -0.999736,
+  0.00119828, -0.157322], [0.807985, 0.0192569,
+  0.588889, -0.132929], [0., 0., 0., 1.]])
+c2toGlobal = np.array([[0.0101734, 0.999808, -0.016767, -0.253804], [-0.540928, 0.0196052,
+  0.84084, -22.23], [0.841007, 0.000515537, 0.541023, 0.617071], [0.,
+  0., 0., 1.]])
+fx = 764.221#750.89501953125
+fy = 749.038#735.374755859375
+cx = 378.153#326.98767770128325
+cy = 175.969#170.60347574188199
 
 c1Pos = c1toGlobal.dot([0,0,0,1])[0:3]
 c2Pos = c2toGlobal.dot([0,0,0,1])[0:3]
@@ -240,6 +249,9 @@ def write_csv(fp, data):
         else:
             fp.write('\n')
 
+h, w = (360,640)
+newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
+
 use_serial = False
 use_prediction = False
 use_csv = False
@@ -261,25 +273,22 @@ for cam in cameras:
     cam.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT,360)
 if use_serial:
     ser = setup_serial()
-    #time.sleep(2)
-    #angles = findAngles(2,2,0,0,1)
-    #cmd = bitstring.pack('>hhhhhh',angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
-    #ser.write(cmd.tobytes())
 
 points = deque(maxlen=nPoints)
 heights = [ int(cam.get(4)) for cam in cameras]
 widths  = [ int(cam.get(3)) for cam in cameras]
 
-h, w = (360,640)
-newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
+testPts=np.mgrid[-3:4,-3:4].T.reshape(-1,2).astype(float)
+nCols = 7
+for i in range(0,nCols**2,nCols*2):
+    testPts[i:i+nCols]=testPts[i:i+nCols][::-1]
 
-#fx = newcameramtx[0][0]
-#fy = newcameramtx[1][1]
-#cx = newcameramtx[0][2]
-#cy = newcameramtx[1][2]
+
+index = 0
 
 calibX = 0
 calibY = 0
+calibZ = 18.0+1.0/16.0;
 
 components = [ (0,0) for cam in cameras ]
 if use_csv:
@@ -287,10 +296,8 @@ if use_csv:
 
 next_ball = time.clock()
 zero_time = time.clock()
+last_point = [0,0,0,0]
 while True:
-
-    #if time.clock() < next_ball:
-    #    continue
 
     grab_time = time.clock()
     for cam in cameras:
@@ -299,8 +306,7 @@ while True:
     frames = [cam.retrieve()[1] for cam in cameras]
 
     for i in range(len(frames)):
-        frame = frames[i]
-        frame = cv2.undistort(frame, mtx, dist, None, newcameramtx)
+        frame = cv2.undistort(frames[i], mtx, dist, None, newcameramtx)
         height = heights[i]
         width = widths[i]
 
@@ -336,6 +342,7 @@ while True:
 
 
         points.appendleft([point[0],point[1],point[2],(components[0][2]+components[1][2])/2.0])
+        point = points[0]
         target = []
         vel = []
         u = []
@@ -346,30 +353,38 @@ while True:
         elif use_prediction:
             try:
                 pass
-                #target,vel,next_ball=predict_target(points)
-                #x = target[0]
-                #y = target[1]
-                #vx = vel[0]
-                #vy = -vel[1]
-                #u = np.array([-x*kp-vx*kv, -y*kp-vy*kv, uz])
+                target,vel,_=predict_target(points)
+                print(target)
+                x = target[0]
+                y = target[1]
+                vx = vel[0]
+                vy = -vel[1]
+                u = np.array([-x*kp-vx*kv, -y*kp-vy*kv, uz])
             except NoTargetException as e:
-                continue
-                #next_ball = time.clock()
-                #target = point
-                #vel = [0,0,-130]
-                #x = target[0]
-                #y = target[1]
+                target = point
+                vel = [0,0,-130]
+                x = target[0]
+                y = target[1]
                 #theta = atan2(y,x)np.sub(current_pos,)
                 #phi = -magic_k*(x**2+y**2)**magic_exp
-                #u = [cos(theta)*sin(phi), sin(theta)*sin(phi), cos(phi)]
+                u = np.array([-x*kp, -y*kp, uz])
         else:
             pass
             #if(point[2] < 3):
             #    continue
-            #target = [point[0],point[1]]
-            target = [calibX,calibY];
-            u = [0, 0, 1]
-            next_ball = time.clock();
+            target = [point[0],point[1]]
+            if(last_point[3]!=0):
+                vel = np.subtract(point,last_point)/(point[3]-last_point[3])
+            else:
+                last_point = point
+                continue
+            last_point = point
+            x = target[0]
+            y = target[1]
+            vx = vel[0]
+            vy = vel[1]
+            #target = [calibX,calibY];
+            u = np.array([-x*kp-vx*kv, -y*kp-vy*kv, uz])
 
         try:
             angles = findAngles(target[0],target[1],u[0],u[1],u[2])
@@ -380,11 +395,11 @@ while True:
 
         if(use_serial):
             #cmd_msg = "{%.2f,%.2f,%.2f,%.2f,%.2f,%.2f}" % (angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
-            if(True):
+            if time.clock() > next_ball:
+                next_ball = time.clock()+.05;
                 cmd = bitstring.pack('>hhhhhh',angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
                 ser.write(cmd.tobytes())
                 current_pos = np.array([target[0],target[1]])
-
     if not headless:
         key = cv2.waitKey(1) & 0xFF
         if key == ord('q'):
@@ -392,13 +407,5 @@ while True:
         if key == ord('f'):
             use_prediction = not use_prediction
             print('predicting: ' + str(use_prediction))
-        if(key == ord('left')):
-            calibX -= .5
-        if(key == ord('right')):
-            calibX += .5
-        if(key == ord('up')):
-            calibY += .5
-        if(key == ord('down')):
-            calibY -= .5
-        if(ley == ord('space')):
-            print("{%d,%d,%f,%f}" % (calibX,calibY,point[0],point[1]))
+        if(key == ord(' ')):
+            print(point[0],point[1],point[2])
