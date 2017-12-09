@@ -11,8 +11,10 @@ from findNormal import findNormal
 from ray import Ray
 from math import *
 
-kp = 0.8
-kv = 1.3
+kp = 1.1
+kv = 1
+fdg_x = -.15
+fdg_y = -.3#+.2
 uz = 100
 magic_exp = 1#/2
 current_pos = np.array([0, 0]);
@@ -343,6 +345,8 @@ while True:
             write_csv(fp, [point[0],point[1],point[2],(components[0][2]+components[1][2])/2.0])
 
         point = [point[0],point[1],point[2],(components[0][2]+components[1][2])/2.0]
+        point[0] += 0.15
+        point[1] += 0.15
         target = []
         vel = []
         u = []
@@ -388,13 +392,15 @@ while True:
             else:
                 points = [point]
                 continue
+            target[0] *= 1.05
+            target[1] *= 1.05
             x = target[0]
             y = target[1]
             #print("x,y = %.2f,%.2f" % (x,y))
             #print("vel = %.2f,%.2f\n" % (vx,vy))
             #target = [calibX,calibY];
             #u = np.array([-np.sign(x)*x**2*kp-vx*kv, -np.sign(y)*y**2*kp-vy*kv, uz])
-            u = np.array([-x*kp-vx*kv-.5-.25, -y*kp-vy*kv-.5+.25, uz])
+            u = np.array([-x*kp-vx*kv-.5+fdg_x, -y*kp-vy*kv-.5+fdg_y, uz])
 
             zeroed = False
 
