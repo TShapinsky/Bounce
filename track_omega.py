@@ -11,9 +11,9 @@ from findNormal import findNormal
 from ray import Ray
 from math import *
 
-kp = 1.25
-kv = 1
-uz = 110
+kp = 0.8
+kv = 1.3
+uz = 100
 magic_exp = 1#/2
 current_pos = np.array([0, 0]);
 threshhold = 0.1
@@ -206,18 +206,6 @@ def predict_target(points, error_threshold = 10000):
         print("way too few points")
         raise NoTargetException()
 
-"""c1toGlobal = np.array([[-0.588756, -0.012549, 0.808213, -22.23],
-                       [0.0229537, -0.999736, 0.00119828, -0.157322],
-                       [0.807985, 0.0192569, 0.588889, -0.132929],
-                       [0., 0., 0., 1.]])
-c2toGlobal = np.array([[0.0101734, 0.999808, -0.016767, -0.253804], [-0.540928, 0.0196052,
-  0.84084, -22.23], [0.841007, 0.000515537, 0.541023, 0.617071], [0.,
-  0., 0., 1.]])
-fx = 764.221#750.89501953125
-fy = 749.038#735.374755859375
-cx = 378.153#326.98767770128325
-cy = 175.969#170.60347574188199"""
-
 c1toGlobal = np.array([[-0.546532, -0.00232285, 0.837435, -20.8501],
               [0.0233164, -0.999651, 0.0124441, -0.128546],
               [0.837113, 0.0263271, 0.546396, 0.838027],
@@ -288,7 +276,7 @@ for cam in cameras:
 if use_serial:
     ser = setup_serial()
 
-points = deque(maxlen=nPoints)
+points = []
 heights = [ int(cam.get(4)) for cam in cameras]
 widths  = [ int(cam.get(3)) for cam in cameras]
 
@@ -309,7 +297,7 @@ if use_csv:
     fp = open('points.csv','w')
 
 next_ball = time.clock()
-zero_time = time.clock()
+zeroed = False
 last_point = [0,0,0,0]
 while True:
 
@@ -346,17 +334,15 @@ while True:
             #cv2.imshow("Mask" + str(i), mask)
 
     zero = False
-    if time.clock() - next_ball > 1 and time.clock() > zero_time:
+    if time.clock() - next_ball > 1 and not zeroed:
         zero = True
-        zero_time = time.clock() + 1
+        zeroed = True
     if (components[0][2] != 0 and components[1][2] != 0) or zero:
         point = to_3d_point(components[0],components[1])
         if use_csv:
             write_csv(fp, [point[0],point[1],point[2],(components[0][2]+components[1][2])/2.0])
 
-
-        points.appendleft([point[0],point[1],point[2],(components[0][2]+components[1][2])/2.0])
-        point = points[0]
+        point = [point[0],point[1],point[2],(components[0][2]+components[1][2])/2.0]
         target = []
         vel = []
         u = []
@@ -383,22 +369,34 @@ while True:
                 #phi = -magic_k*(x**2+y**2)**magic_exp
                 u = np.array([-x*kp, -y*kp, uz])
         else:
-            pass
             #if(point[2] < 3):
             #    continue
             target = [point[0],point[1]]
-            if(last_point[3]!=0):
-                vel = np.subtract(point,last_point)/(point[3]-last_point[3])
+            if(len(points) > 0):
+                last_point=points[-1]
+                #print(point[3]-last_point[3])
+                if(point[3]-last_point[3] > .075):
+                    points = [point]
+                    #print("bounce")
+                    continue
+                points.append(point)
+                dt = point[3]-points[0][3]
+                dx = point[0]-points[0][0]
+                dy = point[1]-points[0][1]
+                vx = dx/dt
+                vy = dy/dt
             else:
-                last_point = point
+                points = [point]
                 continue
-            last_point = point
             x = target[0]
             y = target[1]
-            vx = vel[0]
-            vy = vel[1]
+            #print("x,y = %.2f,%.2f" % (x,y))
+            #print("vel = %.2f,%.2f\n" % (vx,vy))
             #target = [calibX,calibY];
-            u = np.array([-x*kp-vx*kv, -y*kp-vy*kv, uz])
+            #u = np.array([-np.sign(x)*x**2*kp-vx*kv, -np.sign(y)*y**2*kp-vy*kv, uz])
+            u = np.array([-x*kp-vx*kv-.5-.25, -y*kp-vy*kv-.5+.25, uz])
+
+            zeroed = False
 
         try:
             angles = findAngles(target[0],target[1],u[0],u[1],u[2])
@@ -410,8 +408,9 @@ while True:
         if(use_serial):
             #cmd_msg = "{%.2f,%.2f,%.2f,%.2f,%.2f,%.2f}" % (angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
             if time.clock() > next_ball:
+                #print("Sending")
                 next_ball = time.clock()+.05;
-                cmd = bitstring.pack('>hhhhhh',angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
+                cmd = bitstring.pack('>hhhhhhh',-1,angles[0],angles[1],angles[2],angles[3],angles[4],angles[5])
                 ser.write(cmd.tobytes())
                 current_pos = np.array([target[0],target[1]])
     if not headless:
