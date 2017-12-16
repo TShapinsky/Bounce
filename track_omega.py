@@ -11,9 +11,9 @@ from findNormal import findNormal
 from ray import Ray
 from math import *
 
-kp = 1.1#.82
+kp = 1.0#.82
 kv = 0.9#.79
-fdg_x = -2.3#-.15
+fdg_x = -1.45 #-.15
 fdg_y = .2
 posis = []
 uz = 100
@@ -399,8 +399,28 @@ while True:
                 continue
             x = target[0]
             y = target[1]
-            u = np.array([-x*kp - vx*kv + fdg_x, -y*kp - vy*kv + fdg_y, uz])
 
+            r = sqrt(x**2+y**2)
+
+            v = np.array([vx, vy])
+
+            rhat = np.array([x,y])
+            rhat = rhat/r
+            thetahat = np.array([-y,x])
+            thetahat = thetahat/r
+
+            vr = rhat.dot(v)
+            vtheta = thetahat.dot(v)
+            if r > 0.25:
+                ur = -vr*0.5 - 0.25
+                utheta = -vtheta*0.5
+            else:
+                ur = -vr*0.5 - r
+                utheta = -vtheta*0.5
+
+            uxy = ur*rhat + utheta*thetahat
+            u = np.array([uxy[0]+fdg_x, uxy[1]+fdg_y, uz])
+            #u = np.array([-x*kp - vx*kv + fdg_x, -y*kp - vy*kv + fdg_y, uz])
             zeroed = False
 
         try:
