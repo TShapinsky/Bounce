@@ -11,10 +11,13 @@ from findNormal import findNormal
 from ray import Ray
 from math import *
 
-kp = 1.0#.82
-kv = 0.9#.79
-fdg_x = -1.45 #-.15
-fdg_y = .2
+kp = 1.2#.82
+kvt = 0.6#.79
+kvr = 0.6
+maxCor = 100
+fdg_x = -0.6*100.0*pi/180.0-.2
+fdg_y = 0.1*100.0*pi/180.0-.2
+print("x y fudge: %.2f, %.2f"%(fdg_x,fdg_y))
 posis = []
 uz = 100
 
@@ -354,7 +357,7 @@ while True:
         u = []
         if zero:
             target = [0,0,0]
-            u = [0,0,1]
+            u = [fdg_x,fdg_y,uz]
             vel = [0,0,0]
             posis = []
         elif use_prediction:
@@ -381,19 +384,23 @@ while True:
             target = [point[0],point[1]]
             if(len(points) > 0):
                 last_point=points[-1]
+                delt = point[3]-points[0][3]
                 #print(point[3]-last_point[3])
-                if(point[3]-last_point[3] > .075):
+                if(point[3]-last_point[3] > .075 or delt > 0.6):
+                    print(delt)
                     points = [point]
                     #print("bounce")
                     continue
                 points.append(point)
-                dt = point[3]-points[0][3]
-                dx = point[0]-points[0][0]
-                dy = point[1]-points[0][1]
-                dz = point[2]-points[0][2]
-                vx = dx/dt
-                vy = dy/dt
-                vz = dz/dt
+
+                ptsArray = np.array(points);
+                ts = ptsArray[:,3]
+                xs = ptsArray[:,0]
+                ys = ptsArray[:,1]
+                yMod = np.polyfit(ts,ys,1)
+                xMod = np.polyfit(ts,xs,1)
+                vx = xMod[0]
+                vy = yMod[0]
             else:
                 points = [point]
                 continue
@@ -411,15 +418,15 @@ while True:
 
             vr = rhat.dot(v)
             vtheta = thetahat.dot(v)
-            if r > 0.25:
-                ur = -vr*0.5 - 0.25
-                utheta = -vtheta*0.5
-            else:
-                ur = -vr*0.5 - r
-                utheta = -vtheta*0.5
+            posCor = kp*r
+            if(posCor > maxCor):
+                posCor = maxCor
+            ur = -vr*kvr - posCor
+            utheta = -vtheta*kvt
 
             uxy = ur*rhat + utheta*thetahat
             u = np.array([uxy[0]+fdg_x, uxy[1]+fdg_y, uz])
+            #print("x = %.2f,%.2f, v=%.2f,%.2f, u= %.2f,%.2f,%.2f"%(x,y,vx,vy,u[0],u[1],u[2]))
             #u = np.array([-x*kp - vx*kv + fdg_x, -y*kp - vy*kv + fdg_y, uz])
             zeroed = False
 
