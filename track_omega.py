@@ -15,8 +15,8 @@ kp = 1.2#.82
 kvt = 0.6#.79
 kvr = 0.6
 maxCor = 100
-fdg_x = -0.6*100.0*pi/180.0-.2
-fdg_y = 0.1*100.0*pi/180.0-.2
+fdg_x = -0.2*100.0*pi/180.-.4
+fdg_y = 0.2*100.0*pi/180.0-.2
 print("x y fudge: %.2f, %.2f"%(fdg_x,fdg_y))
 posis = []
 uz = 100
